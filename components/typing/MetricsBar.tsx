@@ -16,11 +16,9 @@ function formatTime(sec: number): string {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 rounded-2xl bg-white/60 px-4 py-3 shadow-sm ring-1 ring-black/5 backdrop-blur dark:bg-white/5 dark:ring-white/10">
-      <span className="text-2xl font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">{value}</span>
-      <span className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-        {label}
-      </span>
+    <div className="flex flex-col gap-1 px-5 py-3 first:pl-0">
+      <span className="font-mono text-3xl tabular-figures text-ink">{value}</span>
+      <span className="text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-ink-muted">{label}</span>
     </div>
   );
 }
@@ -34,8 +32,8 @@ export function MetricsBar({ metrics, remainingSec }: MetricsBarProps) {
     remainingSec !== undefined ? formatTime(Math.max(0, remainingSec)) : formatTime(metrics?.elapsedSec ?? 0);
 
   return (
-    <div className="flex flex-wrap justify-center gap-3">
-      <Stat label="NKS (net kelime/dk)" value={String(netWpm)} />
+    <div className="flex flex-wrap divide-x divide-hairline border-y border-hairline">
+      <Stat label="NKS · net kelime/dk" value={String(netWpm)} />
       <Stat label="Brüt hız" value={String(grossWpm)} />
       <Stat label="Doğruluk" value={`%${accuracy}`} />
       <Stat label="Hata" value={String(errorCount)} />

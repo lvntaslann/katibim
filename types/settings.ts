@@ -13,6 +13,10 @@ export interface Settings {
   allowBackspaceDefault: boolean;
   stopOnError: boolean;
   blindMode: boolean;
+  /** Sınav Simülasyonu only — Antrenman/Ders always use word-focus layout. */
+  wordFocusModeInSinav: boolean;
+  /** "Sadece aktif kelime" — hides everything but the active word. */
+  onlyActiveWordMode: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -26,4 +30,6 @@ export const DEFAULT_SETTINGS: Settings = {
   allowBackspaceDefault: true,
   stopOnError: false,
   blindMode: false,
+  wordFocusModeInSinav: false,
+  onlyActiveWordMode: false,
 };

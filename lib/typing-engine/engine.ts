@@ -192,6 +192,38 @@ export class TypingEngine {
     };
   }
 
+  /**
+   * Word-focus mode only: called when Space is pressed but the caret hasn't
+   * reached the passage's next space yet (the typed word was shorter than
+   * the target word). Marks the remaining characters of the current word as
+   * missed, using the exact same fields a wrong keystroke would touch
+   * (charStates/incorrectChars/errorCount) — no second error model. Does not
+   * touch the space character itself, and does not count as a keystroke
+   * since no physical key was pressed for the skipped positions; call
+   * handleKeyDown for the actual Space press separately.
+   * Returns the [from, to) index range that changed, or null if the caret
+   * was already at a word boundary, so the caller can update those DOM spans.
+   */
+  advanceToWordBoundary(): { from: number; to: number } | null {
+    if (this.finished) return null;
+    if (this.caretIndex >= this.text.length || this.text[this.caretIndex] === " ") return null;
+
+    const now = performance.now();
+    if (this.startTime === null) this.startTime = now;
+
+    const from = this.caretIndex;
+    while (this.caretIndex < this.text.length && this.text[this.caretIndex] !== " ") {
+      this.charStates[this.caretIndex] = "incorrect";
+      this.incorrectChars += 1;
+      this.errorCount += 1;
+      this.caretIndex += 1;
+    }
+    const to = this.caretIndex;
+
+    if (this.caretIndex >= this.text.length) this.finished = true;
+    return { from, to };
+  }
+
   /** Call from a low-frequency timer (rAF/interval), never per-keystroke. */
   getMetrics(): EngineMetrics {
     const elapsedMs = this.startTime === null ? 0 : performance.now() - this.startTime;

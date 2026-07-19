@@ -3,15 +3,18 @@
 /**
  * This hook intentionally mutates DOM-element refs imperatively outside
  * React's render cycle (keydown handlers, low-frequency effects) to keep
- * per-keystroke work off the render path — see the file docblock below.
- * The react-hooks/immutability rule flags that pattern broadly (it's tuned
- * for React Compiler's auto-memoization assumptions, which this file does
- * not opt into), so it's disabled for this file rather than peppered with
- * per-line suppressions.
+ * per-keystroke work off the render path — see the file docblock below. It
+ * also uses the React-documented lazy-ref-init-during-render idiom
+ * (https://react.dev/reference/react/useRef#avoiding-recreating-the-ref-contents,
+ * `if (ref.current === null) { ref.current = ... }`) to size the span-ref
+ * array once per mount without an extra effect. Both react-hooks/immutability
+ * and react-hooks/refs are tuned for React Compiler's auto-memoization
+ * assumptions, which this file does not opt into, so they're disabled here
+ * rather than peppered with per-line suppressions.
  */
-/* eslint-disable react-hooks/immutability */
+/* eslint-disable react-hooks/immutability, react-hooks/refs */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TypingEngine, type EngineConfig, type EngineMetrics, type KeyDownResult } from "@/lib/typing-engine";
 import type { KeyboardLayout } from "@/types";
 
@@ -31,27 +34,29 @@ export interface UseTypingEngineOptions {
  * are surfaced through a low-frequency (200ms) state tick, kept separate
  * from the per-keystroke DOM updates so live WPM/accuracy never forces a
  * full text re-render.
+ *
+ * The engine is constructed exactly once per mount (`useState` initializer,
+ * not `useMemo`) and never rebuilt afterwards — `text`/`layout`/`config` are
+ * only read at that first construction. Callers that need a fresh session
+ * must remount by changing the `key` on the owning component (see e.g.
+ * app/sinav/page.tsx's `key={institution.id}`) rather than relying on prop
+ * changes to reset state. This is deliberate: an EngineConfig object literal
+ * recreated on every parent render must never be able to trigger engine
+ * reconstruction, or a setState-in-effect keyed on the engine's identity
+ * turns into an infinite render loop (recreate engine -> reset effect ->
+ * setState -> re-render -> new config object -> recreate engine -> ...).
  */
 export function useTypingEngine({ text, layout, config, active, onFinish, onKeyDown }: UseTypingEngineOptions) {
-  const engineRef = useRef<TypingEngine | null>(null);
+  const [engine] = useState(() => new TypingEngine(text, layout, config));
+
   const spanRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const caretElRef = useRef<HTMLSpanElement | null>(null);
-  const [metrics, setMetrics] = useState<EngineMetrics | null>(null);
-  const [finished, setFinished] = useState(false);
-
-  const engine = useMemo(() => new TypingEngine(text, layout, config), [text, layout, config]);
-
-  // Syncs local refs/state to the (possibly new) engine instance. This is
-  // the documented "adjust state from a prop/value change" effect pattern,
-  // not a self-triggered cascade: it only runs when `engine` itself changes.
-  useEffect(() => {
+  if (spanRefs.current.length !== text.length) {
     spanRefs.current = new Array(text.length).fill(null);
-    caretElRef.current = null;
-    engineRef.current = engine;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- initializing from a new engine instance, not a self-cascade
-    setFinished(false);
-    setMetrics(engine.getMetrics());
-  }, [engine, text.length]);
+  }
+
+  const caretElRef = useRef<HTMLSpanElement | null>(null);
+  const [metrics, setMetrics] = useState<EngineMetrics | null>(() => engine.getMetrics());
+  const [finished, setFinished] = useState(false);
 
   const registerSpan = useCallback(
     (index: number) => (el: HTMLSpanElement | null) => {
@@ -71,10 +76,9 @@ export function useTypingEngine({ text, layout, config, active, onFinish, onKeyD
     if (!active) return;
 
     function handleKeyDown(e: KeyboardEvent) {
-      const eng = engineRef.current;
-      if (!eng || eng.isFinished()) return;
+      if (engine.isFinished()) return;
 
-      const result = eng.handleKeyDown({
+      const result = engine.handleKeyDown({
         code: e.code,
         key: e.key,
         ctrlKey: e.ctrlKey,
@@ -94,37 +98,23 @@ export function useTypingEngine({ text, layout, config, active, onFinish, onKeyD
 
       if (result.finished) {
         setFinished(true);
-        setMetrics(eng.getMetrics());
-        onFinish?.(eng);
+        setMetrics(engine.getMetrics());
+        onFinish?.(engine);
       }
     }
 
     window.addEventListener("keydown", handleKeyDown, { capture: true });
     return () => window.removeEventListener("keydown", handleKeyDown, { capture: true });
-  }, [active, moveCaret, onFinish, onKeyDown]);
+  }, [engine, active, moveCaret, onFinish, onKeyDown]);
 
   useEffect(() => {
     if (!active || finished) return;
-    moveCaret(engineRef.current?.getCaretIndex() ?? 0);
+    moveCaret(engine.getCaretIndex());
     const id = setInterval(() => {
-      setMetrics(engineRef.current?.getMetrics() ?? null);
+      setMetrics(engine.getMetrics());
     }, 200);
     return () => clearInterval(id);
-  }, [active, finished, moveCaret]);
+  }, [engine, active, finished, moveCaret]);
 
-  const reset = useCallback(() => {
-    const e = new TypingEngine(text, layout, config);
-    engineRef.current = e;
-    for (const el of spanRefs.current) {
-      if (el) {
-        delete el.dataset.state;
-        delete el.dataset.caret;
-      }
-    }
-    caretElRef.current = null;
-    setFinished(false);
-    setMetrics(e.getMetrics());
-  }, [text, layout, config]);
-
-  return { engine, metrics, finished, registerSpan, reset };
+  return { engine, metrics, finished, registerSpan };
 }
