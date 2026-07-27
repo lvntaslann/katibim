@@ -5,13 +5,22 @@ import Link from "next/link";
 import { getRepository } from "@/lib/repository";
 import { deriveKeyStats, deriveSubstitutionStats } from "@/lib/typing-engine";
 import { toFingerLoad, toKeyStatRows, topProblemKeys, computeSpeedSeries } from "@/lib/analytics";
+import dynamic from "next/dynamic";
 import { KeyboardHeatmap } from "@/components/analytics/KeyboardHeatmap";
 import { ProblemKeyTable } from "@/components/analytics/ProblemKeyTable";
-import { FingerLoadChart } from "@/components/analytics/FingerLoadChart";
 import { SubstitutionTable } from "@/components/analytics/SubstitutionTable";
-import { SpeedChart } from "@/components/analytics/SpeedChart";
 import { ResultsReveal } from "@/components/analytics/ResultsReveal";
 import type { Session } from "@/types";
+
+const FingerLoadChart = dynamic(() => import("@/components/analytics/FingerLoadChart").then((m) => m.FingerLoadChart), {
+  loading: () => <div className="h-64 animate-pulse rounded-2xl bg-surface/40 border border-ink/5" />,
+  ssr: false,
+});
+
+const SpeedChart = dynamic(() => import("@/components/analytics/SpeedChart").then((m) => m.SpeedChart), {
+  loading: () => <div className="h-64 animate-pulse rounded-2xl bg-surface/40 border border-ink/5" />,
+  ssr: false,
+});
 
 export default function SonucPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params);

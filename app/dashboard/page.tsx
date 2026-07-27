@@ -6,12 +6,21 @@ import { useLayout } from "@/hooks/useLayout";
 import { getRepository } from "@/lib/repository";
 import { toFingerLoad, toKeyStatRows, topProblemKeys, generateWeaknessDrill } from "@/lib/analytics";
 import { DEFAULT_MIN_NET_WORDS_PER_MIN } from "@/lib/institution-resolve";
-import { ProgressChart } from "@/components/analytics/ProgressChart";
+import dynamic from "next/dynamic";
 import { KeyboardHeatmap } from "@/components/analytics/KeyboardHeatmap";
 import { ProblemKeyTable } from "@/components/analytics/ProblemKeyTable";
-import { FingerLoadChart } from "@/components/analytics/FingerLoadChart";
 import { SubstitutionTable } from "@/components/analytics/SubstitutionTable";
 import type { KeyboardLayout, KeyStat, Session, SubstitutionStat } from "@/types";
+
+const ProgressChart = dynamic(() => import("@/components/analytics/ProgressChart").then((m) => m.ProgressChart), {
+  loading: () => <div className="h-64 animate-pulse rounded-2xl bg-surface/40 border border-ink/5" />,
+  ssr: false,
+});
+
+const FingerLoadChart = dynamic(() => import("@/components/analytics/FingerLoadChart").then((m) => m.FingerLoadChart), {
+  loading: () => <div className="h-64 animate-pulse rounded-2xl bg-surface/40 border border-ink/5" />,
+  ssr: false,
+});
 
 const DRILL_STORAGE_KEY = "katibim:drillText";
 

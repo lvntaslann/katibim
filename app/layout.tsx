@@ -13,11 +13,15 @@ import type { KeyboardLayout } from "@/types";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin", "latin-ext"],
+  display: "swap",
+  preload: true,
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin", "latin-ext"],
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
