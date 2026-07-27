@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLayout } from "@/hooks/useLayout";
 import { getRepository } from "@/lib/repository";
 import { toFingerLoad, toKeyStatRows, topProblemKeys, generateWeaknessDrill } from "@/lib/analytics";
 import { DEFAULT_MIN_NET_WORDS_PER_MIN } from "@/lib/institution-resolve";
@@ -27,7 +28,7 @@ function computeStreak(sessions: Session[]): number {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [layout, setLayout] = useState<KeyboardLayout>("F");
+  const [layout, setLayout] = useLayout("F");
   const [sessions, setSessions] = useState<Session[]>([]);
   const [keyStats, setKeyStats] = useState<KeyStat[]>([]);
   const [substitutionStats, setSubstitutionStats] = useState<SubstitutionStat[]>([]);

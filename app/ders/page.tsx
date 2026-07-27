@@ -3,11 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { getLessonsForLayout } from "@/data/lessons";
+import { useLayout } from "@/hooks/useLayout";
 import { getRepository } from "@/lib/repository";
 import type { KeyboardLayout, Session } from "@/types";
 
 export default function DersPage() {
-  const [layout, setLayout] = useState<KeyboardLayout>("F");
+  const [layout, setLayout] = useLayout("F");
   const [sessions, setSessions] = useState<Session[]>([]);
   const lessons = useMemo(() => getLessonsForLayout(layout), [layout]);
 
