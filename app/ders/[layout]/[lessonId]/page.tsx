@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TypingSession } from "@/components/typing/TypingSession";
@@ -24,6 +24,22 @@ export default function DersRunnerPage({
   const { layout, lessonId } = use(params);
   const router = useRouter();
   const lesson = getLessonById(lessonId);
+
+  useEffect(() => {
+    getRepository()
+      .getSettings()
+      .then((s) => {
+        if (s.defaultLayout !== layout) {
+          return getRepository().saveSettings({ ...s, defaultLayout: layout });
+        }
+      })
+      .then(() => {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("katibim:layout-changed"));
+        }
+      })
+      .catch(() => {});
+  }, [layout]);
 
   const [stepIndex, setStepIndex] = useState(0);
   const [lastResult, setLastResult] = useState<{ passed: boolean; accuracy: number } | null>(null);

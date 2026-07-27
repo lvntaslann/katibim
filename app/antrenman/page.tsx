@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TypingSession } from "@/components/typing/TypingSession";
 import { PRACTICE_TEXTS, buildExamText } from "@/data/practice-texts";
+import { useLayout } from "@/hooks/useLayout";
 import { getRepository } from "@/lib/repository";
 import type { EngineMetrics } from "@/lib/typing-engine";
 import type { KeyboardLayout, PracticeText, Session } from "@/types";
@@ -33,7 +34,7 @@ function formatCountdown(sec: number): string {
 function AntrenmanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [layout, setLayout] = useState<KeyboardLayout>("F");
+  const [layout, setLayout] = useLayout("F");
   const [textId, setTextId] = useState(PRACTICE_TEXTS[0].id);
   const [duration, setDuration] = useState<number | undefined>(undefined);
   const [drillText, setDrillText] = useState<PracticeText | null>(null);

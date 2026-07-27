@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TypingSession } from "@/components/typing/TypingSession";
 import { INSTITUTIONS } from "@/data/institutions";
 import { buildExamText } from "@/data/practice-texts";
+import { useLayout } from "@/hooks/useLayout";
 import { resolveInstitutionExamConfig } from "@/lib/institution-resolve";
 import { getRepository } from "@/lib/repository";
 import type { KeyboardLayout, Session } from "@/types";
@@ -12,7 +13,7 @@ import type { KeyboardLayout, Session } from "@/types";
 export default function SinavPage() {
   const router = useRouter();
   const [institutionId, setInstitutionId] = useState(INSTITUTIONS[0].id);
-  const [layout, setLayout] = useState<KeyboardLayout>("F");
+  const [layout, setLayout] = useLayout("F");
   const [examStarted, setExamStarted] = useState(false);
 
   const institution = INSTITUTIONS.find((i) => i.id === institutionId) ?? INSTITUTIONS[0];
