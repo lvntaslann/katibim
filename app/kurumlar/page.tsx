@@ -44,7 +44,7 @@ export default function KurumlarPage() {
           onClick={() => setCategory("all")}
           className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
             category === "all"
-              ? "bg-blue-600 text-white"
+              ? "bg-accent text-base"
               : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300"
           }`}
         >
@@ -56,7 +56,7 @@ export default function KurumlarPage() {
             onClick={() => setCategory(c)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
               category === c
-                ? "bg-blue-600 text-white"
+                ? "bg-accent text-base"
                 : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300"
             }`}
           >

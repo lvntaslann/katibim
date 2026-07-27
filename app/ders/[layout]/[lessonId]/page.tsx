@@ -33,7 +33,7 @@ export default function DersRunnerPage({
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-12 text-center">
         <p className="text-neutral-500">Ders bulunamadı.</p>
-        <Link href="/ders" className="text-blue-600 hover:underline">
+        <Link href="/ders" className="text-accent hover:underline">
           Derslere dön
         </Link>
       </main>
@@ -104,7 +104,7 @@ export default function DersRunnerPage({
             {lastResult.passed && (
               <button
                 onClick={next}
-                className="rounded-full bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700"
+                className="rounded-full bg-accent px-5 py-2 font-medium text-base hover:bg-accent-strong"
               >
                 {stepIndex + 1 < lesson.steps.length ? "Sonraki adım" : "Dersi tamamla"}
               </button>

@@ -88,7 +88,7 @@ export default function MulakatPage() {
       <Section title="Sık Sorulan Sorular ve Cevap Yapısı">
         <div className="flex flex-col gap-4">
           {SAMPLE_QUESTIONS.map((item) => (
-            <div key={item.q} className="border-l-2 border-blue-500 pl-4">
+            <div key={item.q} className="border-l-2 border-accent pl-4">
               <p className="font-medium text-neutral-900 dark:text-neutral-100">{item.q}</p>
               <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">{item.a}</p>
             </div>

@@ -27,7 +27,7 @@ export function FingerLoadChart({ data }: FingerLoadChartProps) {
             <XAxis type="number" stroke="currentColor" className="text-xs text-neutral-500" />
             <YAxis type="category" dataKey="finger" width={90} stroke="currentColor" className="text-xs text-neutral-500" />
             <Tooltip />
-            <Bar dataKey="Basış" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+            <Bar dataKey="Basış" fill="var(--color-accent)" radius={[0, 4, 4, 0]} />
             <Bar dataKey="Hata" fill="#ef4444" radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
