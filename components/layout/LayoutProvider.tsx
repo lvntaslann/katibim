@@ -14,13 +14,19 @@ const LayoutContext = createContext<LayoutContextValue | null>(null);
 const COOKIE_KEY = "katibim:layout";
 const LS_LAYOUT_KEY = "katibim:layout";
 
-function persistLayout(layout: KeyboardLayout) {
+function sanitizeLayout(val: unknown): KeyboardLayout {
+  return val === "Q" ? "Q" : "F";
+}
+
+function persistLayout(rawLayout: unknown) {
   if (typeof window === "undefined") return;
+  const safeLayout = sanitizeLayout(rawLayout);
   try {
-    window.localStorage.setItem(LS_LAYOUT_KEY, layout);
+    window.localStorage.setItem(LS_LAYOUT_KEY, safeLayout);
   } catch {}
   try {
-    document.cookie = `${COOKIE_KEY}=${layout}; path=/; max-age=31536000; SameSite=Lax`;
+    const isSecure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${COOKIE_KEY}=${safeLayout}; path=/; max-age=31536000; SameSite=Lax${isSecure}`;
   } catch {}
 }
 
@@ -31,7 +37,7 @@ export function LayoutProvider({
   children: React.ReactNode;
   initialLayout?: KeyboardLayout;
 }) {
-  const [layout, setLayoutState] = useState<KeyboardLayout>(initialLayout);
+  const [layout, setLayoutState] = useState<KeyboardLayout>(() => sanitizeLayout(initialLayout));
 
   // Keep repository (IndexedDB / backend settings) in sync on client mount
   useEffect(() => {
@@ -40,9 +46,10 @@ export function LayoutProvider({
       .getSettings()
       .then((settings) => {
         if (!cancelled && settings && settings.defaultLayout) {
-          if (settings.defaultLayout !== layout) {
-            setLayoutState(settings.defaultLayout);
-            persistLayout(settings.defaultLayout);
+          const safeLayout = sanitizeLayout(settings.defaultLayout);
+          if (safeLayout !== layout) {
+            setLayoutState(safeLayout);
+            persistLayout(safeLayout);
           }
         }
       })
@@ -53,13 +60,14 @@ export function LayoutProvider({
   }, [layout]);
 
   const setLayout = useCallback((newLayout: KeyboardLayout) => {
-    setLayoutState(newLayout);
-    persistLayout(newLayout);
+    const safeLayout = sanitizeLayout(newLayout);
+    setLayoutState(safeLayout);
+    persistLayout(safeLayout);
 
     getRepository()
       .getSettings()
       .then((settings) => {
-        return getRepository().saveSettings({ ...settings, defaultLayout: newLayout });
+        return getRepository().saveSettings({ ...settings, defaultLayout: safeLayout });
       })
       .catch(() => {});
   }, []);
@@ -74,10 +82,11 @@ export function LayoutProvider({
 export function useLayout(fallback: KeyboardLayout = "F") {
   const context = useContext(LayoutContext);
   if (!context) {
-    const [layout, setLayoutState] = useState<KeyboardLayout>(fallback);
+    const [layout, setLayoutState] = useState<KeyboardLayout>(() => sanitizeLayout(fallback));
     const setLayout = useCallback((newLayout: KeyboardLayout) => {
-      setLayoutState(newLayout);
-      persistLayout(newLayout);
+      const safeLayout = sanitizeLayout(newLayout);
+      setLayoutState(safeLayout);
+      persistLayout(safeLayout);
     }, []);
     return [layout, setLayout] as const;
   }
