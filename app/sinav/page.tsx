@@ -55,10 +55,10 @@ export default function SinavPage() {
                 const inst = INSTITUTIONS.find((i) => i.id === e.target.value);
                 if (inst && inst.acceptedLayouts !== "both") setLayout(inst.acceptedLayouts);
               }}
-              className="flex-1 border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent"
+              className="flex-1 border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent dark:bg-transparent"
             >
               {INSTITUTIONS.map((i) => (
-                <option key={i.id} value={i.id}>
+                <option key={i.id} value={i.id} className="bg-base text-ink font-normal dark:bg-[#141413] dark:text-[#edeae3]">
                   {i.name} — {i.roleTitle}
                 </option>
               ))}

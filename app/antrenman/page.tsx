@@ -149,12 +149,12 @@ function AntrenmanContent() {
                 setTextId(e.target.value);
                 restart();
               }}
-              className="border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent"
+              className="border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent dark:bg-transparent"
             >
               {TEXT_GROUPS.map((group) => (
-                <optgroup key={group.category} label={group.label}>
+                <optgroup key={group.category} label={group.label} className="bg-base text-ink font-semibold dark:bg-[#141413] dark:text-[#edeae3]">
                   {PRACTICE_TEXTS.filter((t) => t.category === group.category).map((t) => (
-                    <option key={t.id} value={t.id}>
+                    <option key={t.id} value={t.id} className="bg-base text-ink font-normal dark:bg-[#141413] dark:text-[#edeae3]">
                       {t.title}
                     </option>
                   ))}

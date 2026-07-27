@@ -13,6 +13,7 @@
  * next-themes toggling `.dark` on <html> — see components/layout/ThemeToggle.tsx.
  */
 :root {
+  color-scheme: light;
   /* Base surfaces */
   --color-base: #fbfbfa;
   --color-surface: #f2f1ee;
@@ -43,6 +44,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --color-base: #141413;
   --color-surface: #1c1b19;
 
