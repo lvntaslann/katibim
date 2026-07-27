@@ -36,6 +36,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  reactStrictMode: true,
+  poweredByHeader: false,
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "recharts", "framer-motion"],
+  },
   async headers() {
     return [
       {
