@@ -8,7 +8,13 @@ import { buildExamText } from "@/data/practice-texts";
 import { useLayout } from "@/hooks/useLayout";
 import { resolveInstitutionExamConfig } from "@/lib/institution-resolve";
 import { getRepository } from "@/lib/repository";
+import { CustomSelect, type SelectOption } from "@/components/ui/CustomSelect";
 import type { KeyboardLayout, Session } from "@/types";
+
+const INSTITUTION_OPTIONS: SelectOption[] = INSTITUTIONS.map((i) => ({
+  value: i.id,
+  label: `${i.name} — ${i.roleTitle}`,
+}));
 
 export default function SinavPage() {
   const router = useRouter();
@@ -46,24 +52,20 @@ export default function SinavPage() {
 
       {!examStarted ? (
         <div className="flex w-full max-w-xl flex-col gap-6">
-          <label className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-ink-muted">Kurum</span>
-            <select
+            <CustomSelect
               value={institutionId}
-              onChange={(e) => {
-                setInstitutionId(e.target.value);
-                const inst = INSTITUTIONS.find((i) => i.id === e.target.value);
+              onChange={(val) => {
+                setInstitutionId(val);
+                const inst = INSTITUTIONS.find((i) => i.id === val);
                 if (inst && inst.acceptedLayouts !== "both") setLayout(inst.acceptedLayouts);
               }}
-              className="flex-1 border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent"
-            >
-              {INSTITUTIONS.map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.name} — {i.roleTitle}
-                </option>
-              ))}
-            </select>
-          </label>
+              options={INSTITUTION_OPTIONS}
+              className="flex-1"
+              dropdownWidthClassName="w-full min-w-[280px]"
+            />
+          </div>
 
           <div className="flex items-center gap-4">
             <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-ink-muted">Klavye</span>

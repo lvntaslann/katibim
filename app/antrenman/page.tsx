@@ -6,6 +6,7 @@ import { TypingSession } from "@/components/typing/TypingSession";
 import { PRACTICE_TEXTS, buildExamText } from "@/data/practice-texts";
 import { useLayout } from "@/hooks/useLayout";
 import { getRepository } from "@/lib/repository";
+import { CustomSelect, type SelectGroup } from "@/components/ui/CustomSelect";
 import type { EngineMetrics } from "@/lib/typing-engine";
 import type { KeyboardLayout, PracticeText, Session } from "@/types";
 
@@ -24,6 +25,15 @@ const TEXT_GROUPS: { label: string; category: PracticeText["category"] }[] = [
   { label: "Hukuki Metin", category: "hukuki" },
   { label: "Resmî Yazışma", category: "resmi" },
 ];
+
+const TEXT_SELECT_GROUPS: SelectGroup[] = TEXT_GROUPS.map((g) => ({
+  category: g.category,
+  label: g.label,
+  options: PRACTICE_TEXTS.filter((t) => t.category === g.category).map((t) => ({
+    value: t.id,
+    label: t.title,
+  })),
+}));
 
 function formatCountdown(sec: number): string {
   const m = Math.floor(sec / 60);
@@ -141,27 +151,18 @@ function AntrenmanContent() {
         </div>
 
         {!drillText && (
-          <label className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <span className="text-xs font-medium uppercase tracking-wide text-ink-muted">Metin</span>
-            <select
+            <CustomSelect
               value={textId}
-              onChange={(e) => {
-                setTextId(e.target.value);
+              onChange={(val) => {
+                setTextId(val);
                 restart();
               }}
-              className="border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent"
-            >
-              {TEXT_GROUPS.map((group) => (
-                <optgroup key={group.category} label={group.label}>
-                  {PRACTICE_TEXTS.filter((t) => t.category === group.category).map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.title}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </label>
+              groups={TEXT_SELECT_GROUPS}
+              dropdownWidthClassName="w-64 min-w-[240px]"
+            />
+          </div>
         )}
 
         <label className="flex items-center gap-3">
