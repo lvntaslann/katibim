@@ -11,6 +11,26 @@ mapped once into Tailwind's theme via `@theme inline` so every component
 uses ordinary utility classes (`bg-base`, `text-ink`, `border-hairline`,
 `text-accent`, `text-danger`, …) instead of hardcoded colors.
 
+## Two registers
+
+The site has two distinct visual registers, both built from the same token
+set:
+
+- **App surfaces** (antrenman, sınav, ders, dashboard, sonuç, …): flat, calm,
+  glow-free — the rules below (no gradients, no blur, no shadows) apply in
+  full. These are screens people use under time pressure; the chrome must
+  recede.
+- **Marketing surface** (`app/page.tsx`, the landing page only): allowed to
+  be more expressive — gradient glow, a subtle grain texture, blurred
+  decorative preview cards, pill-shaped chat-bar-style CTAs. This is the
+  `.hero-glow` utility in `app/globals.css`: layered `radial-gradient`s built
+  with `color-mix(in srgb, var(--color-accent) …%, transparent)` so the glow
+  re-tints itself in dark mode from the same accent token, plus an
+  `::before` grain layer (an inline SVG `feTurbulence` filter, no external
+  image asset) blended with `mix-blend-mode: overlay` at very low opacity.
+  Keep this confined to the landing hero — do not let gradients/blur/shadow
+  creep into the app surfaces above.
+
 ## Dark mode
 
 Implemented with **next-themes** (`components/layout/ThemeProvider.tsx`,

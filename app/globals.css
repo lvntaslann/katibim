@@ -151,6 +151,38 @@ body {
   animation: blocked-signal 140ms ease-out;
 }
 
+/* Hero headline typewriter cursor (components/layout/TypewriterHeadline.tsx). */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.typewriter-cursor {
+  animation: cursor-blink 900ms step-end infinite;
+}
+
+/* Gentle float for the hero's decorative preview cards (app/page.tsx) — a
+   pure translateY loop kept on an inner wrapper so it composes with the
+   card's own static Tailwind rotate class (one transform per element,
+   set imperatively here vs. utility, would otherwise clobber the other). */
+@keyframes hero-card-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.hero-card-float {
+  animation: hero-card-float 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -161,3 +193,38 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Marketing hero only (app/page.tsx) — an expressive gradient + grain
+   treatment reserved for the landing page's hero band. Interior app
+   screens (typing runs, dashboard, sınav) stay on the flat, glow-free
+   tokens above — see docs/design-system.md, "Two registers." Every stop
+   is derived from the existing accent tokens via color-mix() so the glow
+   re-tints itself in dark mode instead of needing its own light/dark pair. */
+.hero-glow {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(55% 45% at 15% 10%, color-mix(in srgb, var(--color-accent) 38%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 90% 0%, color-mix(in srgb, var(--color-accent-strong) 32%, transparent), transparent 70%),
+    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 75%),
+    var(--color-base);
+}
+
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* NOTE: deliberately no blanket `.hero-glow > * { position: relative }`
+   rule here — it would override the FloatingHeroCard overlays' own
+   `absolute` utility class (equal specificity, later in the cascade wins),
+   turning them back into normal-flow flex items. Anything that needs to
+   sit above the ::before grain layer sets `relative z-10` (or equivalent)
+   directly in app/page.tsx instead. */
