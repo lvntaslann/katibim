@@ -26,6 +26,8 @@ export interface UseTypingEngineOptions {
   active: boolean;
   onFinish?: (engine: TypingEngine) => void;
   onKeyDown?: (result: KeyDownResult) => void;
+  /** Called imperatively (no re-render) whenever the caret moves to a new span. */
+  onCaretMove?: (el: HTMLSpanElement | null) => void;
 }
 
 /**
@@ -46,7 +48,15 @@ export interface UseTypingEngineOptions {
  * turns into an infinite render loop (recreate engine -> reset effect ->
  * setState -> re-render -> new config object -> recreate engine -> ...).
  */
-export function useTypingEngine({ text, layout, config, active, onFinish, onKeyDown }: UseTypingEngineOptions) {
+export function useTypingEngine({
+  text,
+  layout,
+  config,
+  active,
+  onFinish,
+  onKeyDown,
+  onCaretMove,
+}: UseTypingEngineOptions) {
   const [engine] = useState(() => new TypingEngine(text, layout, config));
 
   const spanRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -65,12 +75,16 @@ export function useTypingEngine({ text, layout, config, active, onFinish, onKeyD
     []
   );
 
-  const moveCaret = useCallback((index: number) => {
-    if (caretElRef.current) delete caretElRef.current.dataset.caret;
-    const el = spanRefs.current[index] ?? null;
-    if (el) el.dataset.caret = "true";
-    caretElRef.current = el;
-  }, []);
+  const moveCaret = useCallback(
+    (index: number) => {
+      if (caretElRef.current) delete caretElRef.current.dataset.caret;
+      const el = spanRefs.current[index] ?? null;
+      if (el) el.dataset.caret = "true";
+      caretElRef.current = el;
+      onCaretMove?.(el);
+    },
+    [onCaretMove]
+  );
 
   useEffect(() => {
     if (!active) return;

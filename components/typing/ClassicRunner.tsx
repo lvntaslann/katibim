@@ -27,6 +27,9 @@ interface ClassicRunnerProps {
  * passage via a window-level keydown listener. Used by Sınav Simülasyonu
  * (faithful to real exam conditions) and anywhere word-focus is disabled.
  */
+
+const WINDOW_HEIGHT_PX = 320;
+
 export function ClassicRunner({
   mode,
   layout,
@@ -42,6 +45,14 @@ export function ClassicRunner({
   const [started, setStarted] = useState(!requireStart);
   const [preCountdown, setPreCountdown] = useState<number | null>(null);
   const completedRef = useRef(false);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Sınav Simülasyonu shows text and keyboard side by side (text left,
+  // keyboard right) and reveals the passage through a fixed-height scrolling
+  // window that follows the caret (like karaoke lyrics) instead of the full,
+  // ever-growing paragraph — other modes keep the plain stacked paragraph.
+  const windowed = mode === "sinav";
 
   const handleFinish = useCallback(
     async (engine: TypingEngine) => {
@@ -53,12 +64,25 @@ export function ClassicRunner({
     [mode, text.id, layout, institutionId, lessonId, onComplete]
   );
 
+  const onCaretMove = useCallback(
+    (el: HTMLSpanElement | null) => {
+      if (!windowed || !el) return;
+      const viewportEl = viewportRef.current;
+      const scrollEl = scrollRef.current;
+      if (!viewportEl || !scrollEl) return;
+      const target = -(el.offsetTop - viewportEl.clientHeight / 2 + el.offsetHeight / 2);
+      scrollEl.style.transform = `translateY(${Math.min(0, target)}px)`;
+    },
+    [windowed]
+  );
+
   const { engine, metrics, finished, registerSpan } = useTypingEngine({
     text: text.body,
     layout,
     config,
     active: started,
     onFinish: handleFinish,
+    onCaretMove,
   });
 
   // Hard duration cutoff for timed modes (sınav simülasyonu).
@@ -95,26 +119,42 @@ export function ClassicRunner({
     <div className="flex w-full flex-col gap-6">
       <MetricsBar metrics={metrics} remainingSec={remainingSec} />
 
-      <div className="relative w-full bg-surface p-8">
-        {!started && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-base">
-            {preCountdown ? (
-              <span className="font-mono text-6xl tabular-figures text-accent">{preCountdown}</span>
-            ) : (
-              <button
-                type="button"
-                onClick={requireStart ? beginCountdown : () => setStarted(true)}
-                className="border border-accent px-8 py-3 text-lg font-medium text-accent transition-colors hover:bg-accent hover:text-base"
-              >
-                Başla
-              </button>
-            )}
+      <div className={windowed ? "flex flex-col gap-6 xl:flex-row xl:items-start" : "flex flex-col gap-6"}>
+        <div
+          ref={viewportRef}
+          className={`relative min-w-0 flex-1 bg-surface ${windowed ? "overflow-hidden" : "p-8"}`}
+          style={windowed ? { height: WINDOW_HEIGHT_PX } : undefined}
+        >
+          {!started && (
+            <div className="fixed inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-base">
+              {preCountdown ? (
+                <span className="font-mono text-6xl tabular-figures text-accent">{preCountdown}</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={requireStart ? beginCountdown : () => setStarted(true)}
+                  className="border border-accent px-8 py-3 text-lg font-medium text-accent transition-colors hover:bg-accent hover:text-base"
+                >
+                  Başla
+                </button>
+              )}
+            </div>
+          )}
+          {windowed ? (
+            <div ref={scrollRef} className="px-8 py-8 transition-transform duration-150 ease-out">
+              <TextDisplay text={text.body} registerSpan={registerSpan} blindMode={blindMode} />
+            </div>
+          ) : (
+            <TextDisplay text={text.body} registerSpan={registerSpan} blindMode={blindMode} />
+          )}
+        </div>
+
+        {overlayEnabled && (
+          <div className={windowed ? "shrink-0 overflow-x-auto xl:sticky xl:top-24" : undefined}>
+            <KeyboardOverlay engine={engine} layout={layout} active={started && !finished} />
           </div>
         )}
-        <TextDisplay text={text.body} registerSpan={registerSpan} blindMode={blindMode} />
       </div>
-
-      {overlayEnabled && <KeyboardOverlay engine={engine} layout={layout} active={started && !finished} />}
     </div>
   );
 }
