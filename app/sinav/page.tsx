@@ -32,18 +32,21 @@ export default function SinavPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col items-center gap-8 px-4 py-12">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Sınav Simülasyonu</h1>
-        <p className="mt-1 text-neutral-500 dark:text-neutral-400">
+    <main
+      className={`mx-auto flex flex-col gap-8 px-6 py-14 ${examStarted ? "max-w-7xl" : "max-w-5xl"}`}
+    >
+      <div className="flex flex-col gap-2 text-left">
+        <span className="text-xs font-medium uppercase tracking-[0.14em] text-ink-muted">Sınav Modülü</span>
+        <h1 className="text-4xl font-semibold tracking-tight text-ink">Sınav Simülasyonu</h1>
+        <p className="max-w-xl text-sm text-ink-muted">
           Kuruma özgü süre ve puanlama kuralları ile gerçek sınav ortamını deneyimleyin.
         </p>
       </div>
 
       {!examStarted ? (
-        <div className="flex w-full max-w-xl flex-col gap-5">
-          <label className="flex flex-col gap-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            Kurum
+        <div className="flex w-full max-w-xl flex-col gap-6">
+          <label className="flex items-center gap-4">
+            <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-ink-muted">Kurum</span>
             <select
               value={institutionId}
               onChange={(e) => {
@@ -51,7 +54,7 @@ export default function SinavPage() {
                 const inst = INSTITUTIONS.find((i) => i.id === e.target.value);
                 if (inst && inst.acceptedLayouts !== "both") setLayout(inst.acceptedLayouts);
               }}
-              className="rounded-xl border border-neutral-300 bg-white px-4 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+              className="flex-1 border-b border-hairline bg-transparent py-1 text-sm text-ink focus:border-accent"
             >
               {INSTITUTIONS.map((i) => (
                 <option key={i.id} value={i.id}>
@@ -61,55 +64,61 @@ export default function SinavPage() {
             </select>
           </label>
 
-          <label className="flex flex-col gap-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            Klavye Düzeni
-            <div className="flex overflow-hidden rounded-full border border-neutral-300 dark:border-neutral-700">
+          <div className="flex items-center gap-4">
+            <span className="shrink-0 text-xs font-medium uppercase tracking-wide text-ink-muted">Klavye</span>
+            <div className="flex gap-4">
               {availableLayouts.map((l) => (
                 <button
                   key={l}
                   type="button"
                   onClick={() => setLayout(l)}
-                  className={`flex-1 px-4 py-2 text-sm font-medium transition ${
+                  className={`border-b-2 pb-0.5 text-sm transition-colors ${
                     layout === l
-                      ? "bg-blue-600 text-white"
-                      : "bg-transparent text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                      ? "border-accent text-ink"
+                      : "border-transparent text-ink-muted hover:border-hairline hover:text-ink"
                   }`}
                 >
                   {l} Klavye
                 </button>
               ))}
             </div>
-          </label>
+          </div>
 
-          <div className="rounded-2xl border border-amber-300/60 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-            <p className="font-semibold">{institution.disclaimer}</p>
-            <p className="mt-1 text-amber-800/90 dark:text-amber-200/80">{institution.sourceNote}</p>
+          <div className="border-l-2 border-hairline py-1 pl-4 text-sm">
+            <p className="font-medium text-ink">{institution.disclaimer}</p>
+            <p className="mt-1 text-ink-muted">{institution.sourceNote}</p>
             {examConfig.usedDefaults.length > 0 && (
-              <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
+              <p className="mt-2 text-xs text-ink-muted">
                 Şu değerler için genel varsayılan kullanılıyor: {examConfig.usedDefaults.join(", ")}.
               </p>
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-3 text-center text-sm">
-            <div className="rounded-xl bg-neutral-100 p-3 dark:bg-neutral-800">
-              <div className="text-lg font-semibold">{examConfig.durationSec}s</div>
-              <div className="text-neutral-500 dark:text-neutral-400">Süre</div>
+          <div className="flex divide-x divide-hairline border-y border-hairline text-center">
+            <div className="flex flex-1 flex-col gap-1 px-4 py-3">
+              <span className="font-mono text-2xl tabular-figures text-ink">{examConfig.durationSec}s</span>
+              <span className="text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-ink-muted">Süre</span>
             </div>
-            <div className="rounded-xl bg-neutral-100 p-3 dark:bg-neutral-800">
-              <div className="text-lg font-semibold">{examConfig.minNetWordsPerMin}</div>
-              <div className="text-neutral-500 dark:text-neutral-400">Asgari NKS</div>
+            <div className="flex flex-1 flex-col gap-1 px-4 py-3">
+              <span className="font-mono text-2xl tabular-figures text-ink">{examConfig.minNetWordsPerMin}</span>
+              <span className="text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-ink-muted">
+                Asgari NKS
+              </span>
             </div>
-            <div className="rounded-xl bg-neutral-100 p-3 dark:bg-neutral-800">
-              <div className="text-lg font-semibold">{examConfig.allowBackspace ? "Var" : "Yok"}</div>
-              <div className="text-neutral-500 dark:text-neutral-400">Geri silme</div>
+            <div className="flex flex-1 flex-col gap-1 px-4 py-3">
+              <span className="font-mono text-2xl tabular-figures text-ink">
+                {examConfig.allowBackspace ? "Var" : "Yok"}
+              </span>
+              <span className="text-[0.6875rem] font-medium uppercase tracking-[0.08em] text-ink-muted">
+                Geri silme
+              </span>
             </div>
           </div>
 
           <button
             type="button"
             onClick={() => setExamStarted(true)}
-            className="rounded-full bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow-lg transition hover:bg-blue-700"
+            className="self-start border border-accent px-8 py-3 text-lg font-medium text-accent transition-colors hover:bg-accent hover:text-base"
           >
             Sınava Hazırım
           </button>

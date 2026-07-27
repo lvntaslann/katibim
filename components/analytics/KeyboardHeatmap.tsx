@@ -51,7 +51,7 @@ export function KeyboardHeatmap({ keyStats, layout }: KeyboardHeatmapProps) {
               onClick={() => setMode(m)}
               className={`px-3 py-1 font-medium transition ${
                 mode === m
-                  ? "bg-blue-600 text-white"
+                  ? "bg-accent text-base"
                   : "bg-transparent text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
               }`}
             >

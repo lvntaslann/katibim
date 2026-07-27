@@ -108,7 +108,7 @@ export default function DashboardPage() {
               onClick={() => setLayout(l)}
               className={`px-4 py-1.5 text-sm font-medium transition ${
                 layout === l
-                  ? "bg-blue-600 text-white"
+                  ? "bg-accent text-base"
                   : "bg-transparent text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
               }`}
             >
@@ -119,7 +119,7 @@ export default function DashboardPage() {
         <button
           onClick={practiceWeakKeys}
           disabled={!loaded || keyStatRows.length === 0}
-          className="rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-base shadow hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
         >
           Zayıf tuşlarımla pratik yap
         </button>

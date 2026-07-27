@@ -27,7 +27,7 @@ export function SpeedChart({ data }: SpeedChartProps) {
             <YAxis yAxisId="wpm" className="text-xs text-neutral-500" />
             <YAxis yAxisId="acc" orientation="right" domain={[0, 100]} className="text-xs text-neutral-500" />
             <Tooltip />
-            <Line yAxisId="wpm" type="monotone" dataKey="grossWpm" name="Brüt hız" stroke="#3b82f6" dot={false} strokeWidth={2} />
+            <Line yAxisId="wpm" type="monotone" dataKey="grossWpm" name="Brüt hız" stroke="var(--color-accent)" dot={false} strokeWidth={2} />
             <Line yAxisId="acc" type="monotone" dataKey="accuracy" name="Doğruluk %" stroke="#10b981" dot={false} strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>

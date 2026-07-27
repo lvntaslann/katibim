@@ -38,7 +38,7 @@ export default function DersPage() {
             onClick={() => setLayout(l)}
             className={`px-5 py-1.5 text-sm font-medium transition ${
               layout === l
-                ? "bg-blue-600 text-white"
+                ? "bg-accent text-base"
                 : "bg-transparent text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
             }`}
           >
@@ -60,7 +60,7 @@ export default function DersPage() {
                 className={`flex items-center justify-between rounded-2xl border p-5 transition ${
                   locked
                     ? "cursor-not-allowed border-neutral-200 bg-neutral-50 text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900/40"
-                    : "border-neutral-200 bg-white/70 hover:border-blue-400 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60"
+                    : "border-neutral-200 bg-white/70 hover:border-accent hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60"
                 }`}
               >
                 <div>
@@ -75,7 +75,7 @@ export default function DersPage() {
                       ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
                       : locked
                         ? "bg-neutral-200 text-neutral-500 dark:bg-neutral-800"
-                        : "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400"
+                        : "bg-accent-soft text-accent"
                   }`}
                 >
                   {passed ? "Tamamlandı" : locked ? "Kilitli" : "Başla"}

@@ -45,7 +45,7 @@ export default function SonucPage({ params }: { params: Promise<{ sessionId: str
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-12 text-center">
         <p className="text-neutral-500">Bu sonuç bulunamadı.</p>
-        <Link href="/antrenman" className="text-blue-600 hover:underline">
+        <Link href="/antrenman" className="text-accent hover:underline">
           Antrenmana dön
         </Link>
       </main>
@@ -98,7 +98,7 @@ export default function SonucPage({ params }: { params: Promise<{ sessionId: str
       <div className="flex gap-3">
         <Link
           href="/antrenman"
-          className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white hover:bg-blue-700"
+          className="rounded-full bg-accent px-6 py-2 font-medium text-base hover:bg-accent-strong"
         >
           Tekrar dene
         </Link>
