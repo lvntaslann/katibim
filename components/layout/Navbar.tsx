@@ -1,7 +1,9 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu, X, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const LINKS = [
@@ -13,39 +15,129 @@ const LINKS = [
   { href: "/dashboard", label: "Panel" },
 ];
 
-/**
- * Top masthead: full-width bar with a single hairline rule beneath it,
- * understated text links (no pill/rounded nav chrome).
- */
 export function Navbar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-hairline bg-base">
-      <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-6 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight text-ink">
-          Katibim
+    <header className={`sticky top-0 z-50 border-b border-hairline/80 transition-colors ${isOpen ? "bg-base dark:bg-[#141413]" : "bg-base/90 backdrop-blur-xl dark:bg-[#181715]/90"}`}>
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        {/* Logo */}
+        <Link
+          href="/"
+          onClick={() => setIsOpen(false)}
+          className="flex items-center gap-2 text-xl font-bold tracking-tight text-ink transition-opacity hover:opacity-80"
+        >
+          <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl border border-accent/30 bg-accent/20 font-mono text-lg font-black text-accent shadow-sm dark:border-accent-strong/30 dark:bg-accent/25 dark:text-accent-strong">
+            K
+          </span>
+          <span>Katibim</span>
         </Link>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+
+        {/* Desktop Navigation */}
+        <div className="hidden items-center gap-1 md:flex">
           {LINKS.map((link) => {
             const active = pathname === link.href || pathname.startsWith(link.href + "/");
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`border-b-2 py-1 text-sm tracking-wide transition-colors ${
+                className={`relative rounded-xl px-4 py-2 text-sm font-medium transition-all ${
                   active
-                    ? "border-accent text-ink"
-                    : "border-transparent text-ink-muted hover:border-hairline hover:text-ink"
+                    ? "bg-accent/15 text-accent font-semibold dark:bg-accent/20 dark:text-accent-strong"
+                    : "text-ink-muted hover:bg-surface hover:text-ink dark:hover:bg-white/5"
                 }`}
               >
                 {link.label}
               </Link>
             );
           })}
+        </div>
+
+        {/* Desktop Right Actions */}
+        <div className="hidden items-center gap-3 md:flex">
           <ThemeToggle />
+          <Link
+            href="/sinav"
+            className="rounded-full bg-accent px-4 py-2 text-xs font-bold text-base shadow-md transition-all hover:scale-105 hover:bg-accent-strong hover:shadow-lg"
+          >
+            Hemen Başla
+          </Link>
+        </div>
+
+        {/* Mobile Menu Toggle Button */}
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Menüyü aç/kapat"
+            aria-expanded={isOpen}
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline/80 bg-surface/80 text-ink shadow-sm transition-all hover:bg-surface hover:scale-105 active:scale-95 dark:border-white/10 dark:bg-white/5"
+          >
+            {isOpen ? <X className="h-6 w-6 text-accent" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
       </nav>
+
+      {/* Mobile Glassmorphic Drawer Overlay - Solid Opaque Background */}
+      {isOpen && (
+        <div className="fixed inset-x-0 top-[61px] z-50 flex h-[calc(100dvh-61px)] flex-col justify-between bg-base p-6 transition-all md:hidden dark:bg-[#141413]">
+          <div className="flex flex-col gap-2 overflow-y-auto">
+            <p className="px-3 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-ink-muted">
+              Menü Navigasyonu
+            </p>
+            {LINKS.map((link) => {
+              const active = pathname === link.href || pathname.startsWith(link.href + "/");
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex min-h-[52px] items-center justify-between rounded-2xl px-5 py-3 text-base font-semibold transition-all ${
+                    active
+                      ? "border border-accent/30 bg-accent/15 text-accent shadow-sm dark:border-accent/40 dark:bg-accent/20 dark:text-accent-strong"
+                      : "border border-transparent text-ink-muted hover:border-hairline hover:bg-surface hover:text-ink dark:hover:border-white/5 dark:hover:bg-white/5"
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  <ChevronRight className={`h-5 w-5 ${active ? "text-accent dark:text-accent-strong" : "text-ink-muted opacity-60"}`} />
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 border-t border-hairline/80 pt-6 dark:border-white/10">
+            <Link
+              href="/sinav"
+              onClick={() => setIsOpen(false)}
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-accent py-3.5 text-center text-base font-bold text-base shadow-lg transition-transform active:scale-95"
+            >
+              <span>Resmî Sınav Simülasyonu</span>
+              <ChevronRight className="h-5 w-5" />
+            </Link>
+            <p className="text-center text-xs text-ink-muted">
+              Zabıt Kâtipliği & Yargıtay Sınav Platformu
+            </p>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
