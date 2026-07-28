@@ -10,6 +10,9 @@ import dynamic from "next/dynamic";
 import { KeyboardHeatmap } from "@/components/analytics/KeyboardHeatmap";
 import { ProblemKeyTable } from "@/components/analytics/ProblemKeyTable";
 import { SubstitutionTable } from "@/components/analytics/SubstitutionTable";
+import { CyberPulse3D } from "@/components/ui/CyberPulse3D";
+import { KineticCounter } from "@/components/ui/KineticCounter";
+import { GlassCard } from "@/components/ui/GlassCard";
 import type { KeyboardLayout, KeyStat, Session, SubstitutionStat } from "@/types";
 
 const ProgressChart = dynamic(() => import("@/components/analytics/ProgressChart").then((m) => m.ProgressChart), {
@@ -79,34 +82,55 @@ export default function DashboardPage() {
   }
 
   const summaryStats = [
-    { label: "En iyi NKS", value: Math.round(bestNetWpm) },
-    { label: "Ortalama doğruluk", value: `%${avgAccuracy.toFixed(1)}` },
-    { label: "Günlük seri", value: `${streak} gün` },
-    { label: "Toplam pratik", value: `${totalPracticeMin} dk` },
-    { label: "Tamamlanan ders", value: completedLessons },
-    { label: "Sınav hazırlığı", value: `%${examReadiness}` },
+    { label: "En iyi NKS", num: Math.round(bestNetWpm), prefix: "", suffix: "", dec: 0 },
+    { label: "Ortalama doğruluk", num: avgAccuracy, prefix: "%", suffix: "", dec: 1 },
+    { label: "Günlük seri", num: streak, prefix: "", suffix: " gün", dec: 0 },
+    { label: "Toplam pratik", num: totalPracticeMin, prefix: "", suffix: " dk", dec: 0 },
+    { label: "Tamamlanan ders", num: completedLessons, prefix: "", suffix: "", dec: 0 },
+    { label: "Sınav hazırlığı", num: examReadiness, prefix: "%", suffix: "", dec: 0 },
   ];
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-12">
-      <div>
-        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Panel</h1>
-        <p className="mt-1 text-neutral-500 dark:text-neutral-400">İlerlemenizi ve zayıf noktalarınızı takip edin.</p>
+      <div className="relative overflow-hidden rounded-3xl border border-hairline/80 bg-surface/40 p-6 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#1c1b19]/40">
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">Performans Paneli</h1>
+            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+              Yapay Zeka Destekli Tuş Hızı, Parmak Yükü ve Hata Katsayısı Analizi
+            </p>
+          </div>
+          <div className="flex items-center gap-3 rounded-full bg-accent/15 px-4 py-1.5 text-xs font-semibold text-accent dark:bg-accent/20 dark:text-accent-strong">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+            </span>
+            Canlı İstatistik Akışı
+          </div>
+        </div>
+        <div className="mt-4">
+          <CyberPulse3D speed={bestNetWpm || 60} heightClassName="h-36" />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {summaryStats.map((s) => (
-          <div
+          <GlassCard
             key={s.label}
-            className="flex flex-col items-center gap-1 rounded-2xl border border-neutral-200 bg-white/70 p-4 text-center shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60"
+            glowOnHover={true}
+            className="flex flex-col items-center justify-center gap-1.5 !p-4 text-center"
           >
-            <span className="text-xl font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
-              {s.value}
-            </span>
-            <span className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+            <KineticCounter
+              value={s.num}
+              decimals={s.dec}
+              prefix={s.prefix}
+              suffix={s.suffix}
+              className="text-xl font-bold text-neutral-900 dark:text-neutral-100"
+            />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
               {s.label}
             </span>
-          </div>
+          </GlassCard>
         ))}
       </div>
 

@@ -60,9 +60,9 @@ export function TypewriterHeadline() {
   const display = reducedMotion ? HEADLINES[0] : text;
 
   return (
-    <>
+    <span className="inline">
       {display}
-      {!reducedMotion && <span className="typewriter-cursor text-accent">|</span>}
-    </>
+      {!reducedMotion && <span className="typewriter-cursor ml-0.5 inline-block text-accent">|</span>}
+    </span>
   );
 }
