@@ -61,7 +61,7 @@ function computeWordBoundaries(text: string): WordBoundary[] {
  * not `useMemo`) and never rebuilt afterwards. `text`/`layout`/`config` are
  * only read at that first construction. Callers that need a fresh session
  * (new text, new duration, …) must remount this hook by changing the `key`
- * on the component that owns it — see app/antrenman/page.tsx's
+ * on the component that owns it — see app/practice/page.tsx's
  * `key={sessionKey}` — rather than relying on prop changes to reset state.
  * This is deliberate: an EngineConfig object literal recreated on every
  * parent render must never be able to trigger engine reconstruction, or a

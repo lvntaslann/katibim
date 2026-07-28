@@ -7,7 +7,7 @@ import { useLayout } from "@/hooks/useLayout";
 import { getRepository } from "@/lib/repository";
 import type { KeyboardLayout, Session } from "@/types";
 
-export default function DersPage() {
+export default function LessonsPage() {
   const [layout, setLayout] = useLayout("F");
   const [sessions, setSessions] = useState<Session[]>([]);
   const lessons = useMemo(() => getLessonsForLayout(layout), [layout]);
@@ -18,7 +18,7 @@ export default function DersPage() {
       .then(setSessions);
   }, []);
 
-  const passedStepIds = new Set(sessions.filter((s) => s.mode === "ders" && s.passed).map((s) => s.textId));
+  const passedStepIds = new Set(sessions.filter((s) => s.mode === "lesson" && s.passed).map((s) => s.textId));
   const passedLessonIds = new Set(
     lessons.filter((lesson) => lesson.steps.every((st) => passedStepIds.has(st.id))).map((l) => l.id)
   );
@@ -56,7 +56,7 @@ export default function DersPage() {
           return (
             <li key={lesson.id}>
               <Link
-                href={locked ? "#" : `/ders/${layout}/${lesson.id}`}
+                href={locked ? "#" : `/lessons/${layout}/${lesson.id}`}
                 aria-disabled={locked}
                 className={`flex items-center justify-between rounded-2xl border p-5 transition ${
                   locked

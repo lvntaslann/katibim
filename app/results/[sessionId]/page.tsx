@@ -10,7 +10,29 @@ import { KeyboardHeatmap } from "@/components/analytics/KeyboardHeatmap";
 import { ProblemKeyTable } from "@/components/analytics/ProblemKeyTable";
 import { SubstitutionTable } from "@/components/analytics/SubstitutionTable";
 import { ResultsReveal } from "@/components/analytics/ResultsReveal";
+import { AnonymousOptIn } from "@/components/leaderboard/AnonymousOptIn";
+import { useAuth } from "@/components/layout/AuthProvider";
+import { submitResult } from "@/lib/leaderboard/submit-result";
+import { dismissAnonPrompt, getAnonymousName, setAnonymousName, wasAnonPromptDismissed } from "@/lib/anonymous-identity";
+import type { LeaderboardMode, TestResultInput } from "@/types/leaderboard";
 import type { Session } from "@/types";
+
+const LEADERBOARD_MODES: LeaderboardMode[] = ["exam", "practice", "speed-test"];
+const PROMPTABLE_MODES: LeaderboardMode[] = ["exam", "speed-test"];
+
+function toResultInput(session: Session): TestResultInput {
+  return {
+    mode: session.mode as LeaderboardMode,
+    layout: session.layout,
+    netWpm: session.netWpm,
+    grossWpm: session.grossWpm,
+    accuracy: session.accuracy,
+    durationSec: session.durationSec,
+    institutionId: session.institutionId,
+    passed: session.passed,
+    clientSessionId: session.id,
+  };
+}
 
 const FingerLoadChart = dynamic(() => import("@/components/analytics/FingerLoadChart").then((m) => m.FingerLoadChart), {
   loading: () => <div className="h-64 animate-pulse rounded-2xl bg-surface/40 border border-ink/5" />,
@@ -22,15 +44,34 @@ const SpeedChart = dynamic(() => import("@/components/analytics/SpeedChart").the
   ssr: false,
 });
 
-export default function SonucPage({ params }: { params: Promise<{ sessionId: string }> }) {
+export default function ResultsPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params);
+  const { user } = useAuth();
   const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [leaderboardState, setLeaderboardState] = useState<"idle" | "prompt" | "submitted">("idle");
 
   useEffect(() => {
     getRepository()
       .getSession(sessionId)
       .then((s) => setSession(s ?? null));
   }, [sessionId]);
+
+  useEffect(() => {
+    if (!session) return;
+    if (!LEADERBOARD_MODES.includes(session.mode as LeaderboardMode)) return;
+
+    if (user || getAnonymousName()) {
+      void submitResult(toResultInput(session), user?.id ?? null);
+      setLeaderboardState("submitted");
+      return;
+    }
+
+    if (PROMPTABLE_MODES.includes(session.mode as LeaderboardMode) && !wasAnonPromptDismissed()) {
+      setLeaderboardState("prompt");
+    }
+    // Only re-run when the loaded session or auth state actually changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, user]);
 
   const keyStats = useMemo(
     () => (session ? deriveKeyStats(session.keyEvents, session.layout) : []),
@@ -54,7 +95,7 @@ export default function SonucPage({ params }: { params: Promise<{ sessionId: str
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-12 text-center">
         <p className="text-neutral-500">Bu sonuç bulunamadı.</p>
-        <Link href="/antrenman" className="text-accent hover:underline">
+        <Link href="/practice" className="text-accent hover:underline">
           Antrenmana dön
         </Link>
       </main>
@@ -74,7 +115,7 @@ export default function SonucPage({ params }: { params: Promise<{ sessionId: str
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col items-center gap-8 px-4 py-16">
       <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">Sonuç</h1>
       <ResultsReveal revealKey={session.id}>
-        {session.mode === "sinav" && session.passed !== undefined && (
+        {session.mode === "exam" && session.passed !== undefined && (
           <span
             data-reveal
             className={`mb-4 inline-block rounded-full px-5 py-1.5 text-sm font-semibold ${
@@ -104,9 +145,32 @@ export default function SonucPage({ params }: { params: Promise<{ sessionId: str
         </div>
       </ResultsReveal>
 
+      {leaderboardState === "prompt" && (
+        <AnonymousOptIn
+          onSubmit={(name) => {
+            setAnonymousName(name);
+            void submitResult(toResultInput(session), null);
+            setLeaderboardState("submitted");
+          }}
+          onSkip={() => {
+            dismissAnonPrompt();
+            setLeaderboardState("idle");
+          }}
+        />
+      )}
+
+      {leaderboardState === "submitted" && PROMPTABLE_MODES.includes(session.mode as LeaderboardMode) && (
+        <p className="text-sm text-ink-muted">
+          Liderlik tablosuna gönderildi.{" "}
+          <Link href="/leaderboard" className="text-accent underline decoration-hairline underline-offset-4">
+            Tabloyu gör
+          </Link>
+        </p>
+      )}
+
       <div className="flex gap-3">
         <Link
-          href="/antrenman"
+          href="/practice"
           className="rounded-full bg-accent px-6 py-2 font-medium text-base hover:bg-accent-strong"
         >
           Tekrar dene

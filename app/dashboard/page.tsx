@@ -66,7 +66,7 @@ export default function DashboardPage() {
     sessions.length > 0 ? sessions.reduce((sum, s) => sum + s.accuracy, 0) / sessions.length : 0;
   const streak = computeStreak(sessions);
   const completedLessons = new Set(
-    sessions.filter((s) => s.mode === "ders" && s.passed).map((s) => s.lessonId)
+    sessions.filter((s) => s.mode === "lesson" && s.passed).map((s) => s.lessonId)
   ).size;
   const recentSessions = sessions.slice(-5);
   const recentAvgNetWpm =
@@ -78,7 +78,7 @@ export default function DashboardPage() {
   function practiceWeakKeys() {
     const drill = generateWeaknessDrill(keyStats, layout);
     sessionStorage.setItem(DRILL_STORAGE_KEY, JSON.stringify(drill));
-    router.push("/antrenman?drill=1");
+    router.push("/practice?drill=1");
   }
 
   const summaryStats = [

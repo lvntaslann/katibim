@@ -41,7 +41,7 @@ export interface UseTypingEngineOptions {
  * not `useMemo`) and never rebuilt afterwards — `text`/`layout`/`config` are
  * only read at that first construction. Callers that need a fresh session
  * must remount by changing the `key` on the owning component (see e.g.
- * app/sinav/page.tsx's `key={institution.id}`) rather than relying on prop
+ * app/exam/page.tsx's `key={institution.id}`) rather than relying on prop
  * changes to reset state. This is deliberate: an EngineConfig object literal
  * recreated on every parent render must never be able to trigger engine
  * reconstruction, or a setState-in-effect keyed on the engine's identity

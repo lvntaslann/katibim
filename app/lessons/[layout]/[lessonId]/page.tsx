@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { TypingSession } from "@/components/typing/TypingSession";
 import { getLessonById } from "@/data/lessons";
 import { getRepository } from "@/lib/repository";
+import { useAuth } from "@/components/layout/AuthProvider";
+import { submitResult } from "@/lib/leaderboard/submit-result";
+import { getAnonymousName } from "@/lib/anonymous-identity";
 import type { KeyboardLayout, PracticeText, Session } from "@/types";
 
 const STEP_KIND_LABELS: Record<string, string> = {
@@ -16,13 +19,14 @@ const STEP_KIND_LABELS: Record<string, string> = {
   paragraf: "Paragraf",
 };
 
-export default function DersRunnerPage({
+export default function LessonRunnerPage({
   params,
 }: {
   params: Promise<{ layout: KeyboardLayout; lessonId: string }>;
 }) {
   const { layout, lessonId } = use(params);
   const router = useRouter();
+  const { user } = useAuth();
   const lesson = getLessonById(lessonId);
 
   useEffect(() => {
@@ -49,7 +53,7 @@ export default function DersRunnerPage({
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-12 text-center">
         <p className="text-neutral-500">Ders bulunamadı.</p>
-        <Link href="/ders" className="text-accent hover:underline">
+        <Link href="/lessons" className="text-accent hover:underline">
           Derslere dön
         </Link>
       </main>
@@ -69,6 +73,23 @@ export default function DersRunnerPage({
     const passed = session.accuracy >= step.minAccuracy;
     await getRepository().addSession({ ...session, passed });
     setLastResult({ passed, accuracy: session.accuracy });
+
+    if (user || getAnonymousName()) {
+      void submitResult(
+        {
+          mode: "lesson",
+          layout: session.layout,
+          netWpm: session.netWpm,
+          grossWpm: session.grossWpm,
+          accuracy: session.accuracy,
+          durationSec: session.durationSec,
+          lessonId: lesson?.id,
+          passed,
+          clientSessionId: session.id,
+        },
+        user?.id ?? null
+      );
+    }
   }
 
   function retry() {
@@ -82,7 +103,7 @@ export default function DersRunnerPage({
     if (stepIndex + 1 < lesson.steps.length) {
       setStepIndex((i) => i + 1);
     } else {
-      router.push("/ders");
+      router.push("/lessons");
     }
   }
 
@@ -130,7 +151,7 @@ export default function DersRunnerPage({
       ) : (
         <TypingSession
           key={`${step.id}-${attemptKey}`}
-          mode="ders"
+          mode="lesson"
           layout={layout}
           text={stepText}
           lessonId={lesson.id}
