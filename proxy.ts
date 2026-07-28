@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { updateSession } from "@/utils/supabase/proxy";
 
 /**
  * Katibim Edge Security Proxy & Web Application Firewall (WAF)
@@ -23,7 +24,7 @@ const SUSPICIOUS_PATTERNS = [
   /(union\s+select|insert\s+into|drop\s+table|delete\s+from|update\s+\w+\s+set|exec\(\s*@|%27\s*or\s*%27|'\s*or\s*')/i,
 ];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   const fullPathAndQuery = `${url.pathname}${url.search}`;
 
@@ -48,9 +49,10 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // 2. Proceed with response and inject edge security headers
-  const response = NextResponse.next();
+  // 2. Refresh the Supabase auth session (required so Server Components see a valid session)
+  const response = await updateSession(request);
 
+  // 3. Inject edge security headers
   response.headers.set("X-Katibim-Security-Shield", "Active");
   response.headers.set("X-Edge-Protection", "Enforced");
 
