@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -43,5 +44,7 @@ next-env.d.ts
 CLAUDE.md
 AGENTS.md
 .claude/
+.agents/
+skills-lock.json
 prompt.md
 docs/0*-*.md
