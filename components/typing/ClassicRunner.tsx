@@ -48,11 +48,14 @@ export function ClassicRunner({
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Sınav Simülasyonu shows text and keyboard side by side (text left,
-  // keyboard right) and reveals the passage through a fixed-height scrolling
-  // window that follows the caret (like karaoke lyrics) instead of the full,
-  // ever-growing paragraph — other modes keep the plain stacked paragraph.
-  const windowed = mode === "sinav";
+  // Sınav Simülasyonu and the 10-parmak hız testi show text and keyboard
+  // side by side (text left, keyboard right) and reveal the passage through
+  // a fixed-height scrolling window that follows the caret (like karaoke
+  // lyrics) instead of the full, ever-growing paragraph — both use the same
+  // long, duplicated buildExamText() corpus, which is unreadable rendered in
+  // full. Other modes (antrenman/ders use shorter, purpose-picked texts)
+  // keep the plain stacked paragraph.
+  const windowed = mode === "exam" || mode === "speed-test";
 
   const handleFinish = useCallback(
     async (engine: TypingEngine) => {

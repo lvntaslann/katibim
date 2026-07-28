@@ -1,6 +1,6 @@
 import type { KeyboardLayout } from "./institution";
 
-export type SessionMode = "antrenman" | "sinav" | "ders" | "gorev";
+export type SessionMode = "practice" | "exam" | "lesson" | "task" | "speed-test";
 
 /**
  * One recorded keystroke, captured for replay and per-key analytics.

@@ -16,7 +16,7 @@ const INSTITUTION_OPTIONS: SelectOption[] = INSTITUTIONS.map((i) => ({
   label: `${i.name} — ${i.roleTitle}`,
 }));
 
-export default function SinavPage() {
+export default function ExamPage() {
   const router = useRouter();
   const [institutionId, setInstitutionId] = useState(INSTITUTIONS[0].id);
   const [layout, setLayout] = useLayout("F");
@@ -35,7 +35,7 @@ export default function SinavPage() {
   async function handleComplete(session: Session) {
     const passed = session.netWpm >= examConfig.minNetWordsPerMin;
     await getRepository().addSession({ ...session, passed });
-    router.push(`/sonuc/${session.id}`);
+    router.push(`/results/${session.id}`);
   }
 
   return (
@@ -129,7 +129,7 @@ export default function SinavPage() {
       ) : (
         <TypingSession
           key={institution.id}
-          mode="sinav"
+          mode="exam"
           layout={layout}
           text={examText}
           institutionId={institution.id}

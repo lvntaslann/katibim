@@ -110,7 +110,7 @@ function AntrenmanContent() {
   const handleMetricsChange = useCallback((m: EngineMetrics | null) => setMetrics(m), []);
 
   function handleComplete(session: Session) {
-    router.push(`/sonuc/${session.id}`);
+    router.push(`/results/${session.id}`);
   }
 
   const remainingSec = duration !== undefined ? duration - (metrics?.elapsedSec ?? 0) : undefined;
@@ -208,7 +208,7 @@ function AntrenmanContent() {
 
       <TypingSession
         key={sessionKey}
-        mode="antrenman"
+        mode="practice"
         layout={layout}
         text={text}
         wordFocusMode
@@ -221,7 +221,7 @@ function AntrenmanContent() {
   );
 }
 
-export default function AntrenmanPage() {
+export default function PracticePage() {
   return (
     <Suspense fallback={null}>
       <AntrenmanContent />
