@@ -26,13 +26,13 @@ export function Footer() {
         <div className="flex flex-col gap-3 text-left">
           <p className="text-[11px] font-bold uppercase tracking-wider text-ink">Pratik & Sınav</p>
           <div className="flex flex-col gap-2 text-xs text-ink-muted">
-            <Link href="/sinav" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
+            <Link href="/exam" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Sınav Simülasyonu
             </Link>
-            <Link href="/antrenman" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
+            <Link href="/practice" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Serbest Antrenman
             </Link>
-            <Link href="/ders" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
+            <Link href="/lessons" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Adım Adım Dersler
             </Link>
             <Link href="/dashboard" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
@@ -45,13 +45,13 @@ export function Footer() {
         <div className="flex flex-col gap-3 text-left">
           <p className="text-[11px] font-bold uppercase tracking-wider text-ink">Kurumsal Rehber</p>
           <div className="flex flex-col gap-2 text-xs text-ink-muted">
-            <Link href="/kurumlar" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
+            <Link href="/institutions" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Hedef Kurum Profilleri
             </Link>
-            <Link href="/mulakat" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
+            <Link href="/interview" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Sözlü Mülakat Rehberi
             </Link>
-            <Link href="/ders" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
+            <Link href="/lessons" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               F & Q Klavye Düzeni
             </Link>
           </div>

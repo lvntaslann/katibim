@@ -58,7 +58,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-export default function MulakatPage() {
+export default function InterviewPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-8 px-4 py-12">
       <div>
