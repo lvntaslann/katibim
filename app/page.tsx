@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Building2, Gauge, Keyboard, MessageSquare, NotebookText, Timer } from "lucide-react";
+import { ArrowRight, Activity, Building2, Gauge, Keyboard, MessageSquare, NotebookText, RefreshCw, Timer, Trophy } from "lucide-react";
 import { TypewriterHeadline } from "@/components/layout/TypewriterHeadline";
 import { INSTITUTIONS } from "@/data/institutions";
 import { LESSONS } from "@/data/lessons";
@@ -66,17 +66,17 @@ const FEATURES = [
   {
     title: "Gerçekçi Sınav Simülasyonu",
     desc: "Kuruma özgü süre, hata katsayısı ve klavye kuralları ile birebir sınav ortamı.",
-    href: "/sinav",
+    href: "/exam",
   },
   {
     title: "F ve Q Klavye Desteği",
     desc: "Her iki resmî Türkçe klavye düzeninde de anında geçiş yapıp pratik yapın.",
-    href: "/antrenman",
+    href: "/practice",
   },
   {
     title: "Şeffaf Sanal Klavye",
     desc: "Sıradaki tuşu ve doğru parmağı canlı olarak gösteren yarı saydam klavye katmanı.",
-    href: "/ders",
+    href: "/lessons",
   },
   {
     title: "Detaylı Tuş Analitiği",
@@ -86,12 +86,30 @@ const FEATURES = [
   {
     title: "Zayıflığa Özel Alıştırma",
     desc: "En çok hata yaptığınız tuşları esas alan kişiselleştirilmiş alıştırma metinleri.",
-    href: "/antrenman",
+    href: "/practice",
   },
   {
     title: "Kurum ve Mülakat Rehberi",
     desc: "Kurumlara göre sınav kuralları ve sözlü mülakat hazırlık kılavuzu tek yerde.",
-    href: "/kurumlar",
+    href: "/institutions",
+  },
+];
+
+const ACCOUNT_BENEFITS = [
+  {
+    title: "Liderlik Tablosunda Yer Alın",
+    desc: "Sınav, antrenman, ders ve 10 parmak hız testi sonuçlarınız gerçek isminizle liderlik tablosunda görünsün.",
+    icon: <Trophy size={18} />,
+  },
+  {
+    title: "Aktivite Grafiğinizi Görün",
+    desc: "GitHub tarzı bir takvimde günlük çalışma düzeninizi ve serinizi takip edin.",
+    icon: <Activity size={18} />,
+  },
+  {
+    title: "Cihazlar Arasında Senkron",
+    desc: "Sonuçlarınız hesabınıza bağlı kalır; farklı bir cihazdan giriş yaptığınızda geçmişiniz sizi bekler.",
+    icon: <RefreshCw size={18} />,
   },
 ];
 
@@ -102,7 +120,7 @@ const FAQ = [
   },
   {
     q: "Verilerim nerede saklanıyor?",
-    a: "Tüm oturum geçmişiniz ve istatistikleriniz yalnızca tarayıcınızda (IndexedDB) saklanır; sunucuya gönderilmez. Dilediğiniz zaman dışa aktarabilirsiniz.",
+    a: "Hesap açmadan kullanırsanız oturum geçmişiniz yalnızca tarayıcınızda (IndexedDB) saklanır ve sunucuya gönderilmez. Kayıt olursanız liderlik tablosu ve aktivite grafiği için sonuçlarınız hesabınızla senkronize edilir; dilediğiniz zaman dışa aktarabilirsiniz.",
   },
   {
     q: "F klavye mi Q klavye mi öğrenmeliyim?",
@@ -190,7 +208,7 @@ export default function LandingPage() {
           </p>
 
           <Link
-            href="/sinav"
+            href="/exam"
             data-aos="fade-up"
             data-aos-delay="200"
             className="group mt-1 flex w-full max-w-xl flex-col items-center justify-between gap-3 rounded-3xl border border-hairline bg-base/90 p-3 text-center shadow-xl backdrop-blur-md transition-all hover:border-accent hover:shadow-[0_8px_30px_rgba(79,189,179,0.2)] sm:flex-row sm:gap-0 sm:rounded-full sm:py-2 sm:pl-6 sm:pr-2 sm:text-left dark:border-white/10 dark:bg-[#181715]/90"
@@ -201,7 +219,7 @@ export default function LandingPage() {
               <ArrowRight size={16} />
             </span>
           </Link>
-          <Link href="/ders" className="text-xs sm:text-sm font-medium text-ink-muted underline decoration-hairline underline-offset-4 transition hover:text-accent hover:decoration-accent">
+          <Link href="/lessons" className="text-xs sm:text-sm font-medium text-ink-muted underline decoration-hairline underline-offset-4 transition hover:text-accent hover:decoration-accent">
             ya da derslerle sıfırdan on parmak öğrenin
           </Link>
 
@@ -291,6 +309,50 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Account Benefits */}
+      <section className="relative overflow-hidden px-4 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center" data-aos="fade-up">
+            <span className="rounded-full border border-accent/20 bg-accent/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent dark:text-accent-strong">
+              Hesap Avantajları
+            </span>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-100">
+              Kayıt Olmadan da Kullanabilirsiniz
+            </h2>
+            <p className="mx-auto mt-2 max-w-2xl text-sm text-neutral-600 dark:text-neutral-400">
+              Tüm modüller hesap açmadan tamamen açık. Kayıt olursanız ayrıca şunlara da erişirsiniz:
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            {ACCOUNT_BENEFITS.map((b, i) => (
+              <div
+                key={b.title}
+                data-aos="fade-up"
+                data-aos-delay={i * 60}
+                className="flex flex-col gap-3 rounded-3xl border border-hairline/80 bg-surface/80 p-6 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-[#1c1b19]/80"
+              >
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent dark:bg-accent/20 dark:text-accent-strong">
+                  {b.icon}
+                </span>
+                <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">{b.title}</h3>
+                <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{b.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex justify-center" data-aos="fade-up">
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-bold text-base shadow-md transition-all hover:scale-105 hover:bg-accent-strong hover:shadow-lg"
+            >
+              <span>Ücretsiz Kayıt Ol</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Modules */}
       <section className="relative overflow-hidden bg-gradient-to-b from-transparent via-surface/50 to-transparent px-4 py-20 dark:via-neutral-900/50">
         <div className="mx-auto max-w-6xl">
@@ -311,21 +373,21 @@ export default function LandingPage() {
               {
                 title: "Antrenman",
                 desc: "Süre baskısı olmadan serbest pratik yapın, geri silme açık, dilediğiniz metni seçin.",
-                href: "/antrenman",
+                href: "/practice",
                 icon: <Timer className="h-6 w-6" />,
                 badge: "Serbest Pratik",
               },
               {
                 title: "Sınav Simülasyonu",
                 desc: "Kurumunuzu seçin, gerçek sınav süresi ve puanlama kuralları ile test edilin.",
-                href: "/sinav",
+                href: "/exam",
                 icon: <Building2 className="h-6 w-6" />,
                 badge: "Resmî Sınav",
               },
               {
                 title: "Ders Sistemi",
                 desc: "Esas sıradan başlayarak seviye seviye tüm klavyeyi on parmak öğrenin.",
-                href: "/ders",
+                href: "/lessons",
                 icon: <NotebookText className="h-6 w-6" />,
                 badge: "Adım Adım",
               },
@@ -494,13 +556,13 @@ export default function LandingPage() {
           </p>
           <div className="relative z-10 mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/antrenman"
+              href="/practice"
               className="w-full rounded-2xl bg-accent px-8 py-4 text-base font-bold text-base shadow-[0_8px_30px_rgba(79,189,179,0.3)] transition-all hover:scale-105 hover:bg-accent-strong sm:w-auto dark:shadow-[0_8px_30px_rgba(126,212,203,0.25)]"
             >
               Ücretsiz Pratik Başlat
             </Link>
             <Link
-              href="/sinav"
+              href="/exam"
               className="w-full rounded-2xl border border-hairline bg-surface/80 px-8 py-4 text-base font-bold text-neutral-900 backdrop-blur-md transition-all hover:bg-base sm:w-auto dark:border-white/10 dark:bg-white/5 dark:text-neutral-100 dark:hover:bg-white/10"
             >
               Sınav Simülasyonunu Deneyin

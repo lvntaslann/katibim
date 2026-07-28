@@ -8,6 +8,9 @@ import { Footer } from "@/components/layout/Footer";
 import { AosInit } from "@/components/layout/AosInit";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { LayoutProvider } from "@/components/layout/LayoutProvider";
+import { AuthProvider } from "@/components/layout/AuthProvider";
+import { ClaimAnonymousBanner } from "@/components/layout/ClaimAnonymousBanner";
+import { createClient } from "@/utils/supabase/server";
 import type { KeyboardLayout } from "@/types";
 
 const geistSans = Geist({
@@ -39,6 +42,11 @@ export default async function RootLayout({
   const rawCookie = cookieStore.get("katibim:layout")?.value;
   const initialLayout: KeyboardLayout = rawCookie === "Q" ? "Q" : "F";
 
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html
       lang="tr"
@@ -48,10 +56,13 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col bg-base text-ink">
         <ThemeProvider>
           <LayoutProvider initialLayout={initialLayout}>
-            <AosInit />
-            <Navbar />
-            <div className="flex-1">{children}</div>
-            <Footer />
+            <AuthProvider initialUser={user}>
+              <AosInit />
+              <Navbar />
+              <ClaimAnonymousBanner />
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </AuthProvider>
           </LayoutProvider>
         </ThemeProvider>
       </body>

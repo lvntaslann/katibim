@@ -17,7 +17,7 @@ function formatValue(v: unknown): string {
   return String(v);
 }
 
-export default function KurumlarPage() {
+export default function InstitutionsPage() {
   const [category, setCategory] = useState<InstitutionCategory | "all">("all");
 
   const filtered = useMemo(
