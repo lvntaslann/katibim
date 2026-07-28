@@ -2,29 +2,47 @@
 
 Türkiye'deki kamu sektörü kâtiplik (zabıt kâtibi, icra kâtibi, memur vb.)
 alım sınavlarına hazırlanan adaylar için uygulamalı klavye sınavı simülasyonu,
-F/Q klavye ders sistemi ve detaylı tuş analitiği sunan, tamamen istemci
-tarafında (backend'siz) çalışan bir Next.js uygulaması.
+F/Q klavye ders sistemi, 10 parmak hız testi ve detaylı tuş analitiği sunan
+bir Next.js uygulaması. Hesap açmadan, tamamen istemci tarafında (IndexedDB)
+kullanılabilir; isteğe bağlı olarak hesap açan kullanıcılar için Supabase
+üzerinden liderlik tablosu, GitHub tarzı bir aktivite takvimi ve cihazlar
+arası senkron sunar.
 
 ## Kurulum ve Çalıştırma
 
 ```bash
 npm install
+cp .env.example .env.local   # Supabase URL ve publishable key'i doldurun
 npm run dev
 ```
 
 Uygulama [http://localhost:3000](http://localhost:3000) adresinde açılır.
 Prodüksiyon derlemesi için `npm run build && npm run start`.
 
+`.env.local` doldurulmazsa uygulama yine çalışır ama hesap/liderlik
+tablosu/profil sayfaları devre dışı kalır — pratik/sınav/ders modülleri
+her durumda tamamen yerel çalışır.
+
+Veritabanı şeması `supabase/migrations/` altındadır; yeni bir Supabase
+projesine bağlanırken bu dosyaları sırasıyla SQL Editor'den çalıştırın (ya da
+projeye bağlı GitHub entegrasyonu varsa `main`'e merge olduklarında otomatik
+uygulanırlar).
+
 ## Mimari Özeti
 
-- **Next.js (App Router) + TypeScript + Tailwind CSS**, backend yok.
+- **Next.js (App Router) + TypeScript + Tailwind CSS.**
 - Tüm oturum geçmişi, tuş istatistikleri ve ayarlar tarayıcıda **IndexedDB**'de
   saklanır (`lib/repository/indexeddb.ts`), IndexedDB kullanılamıyorsa
   otomatik olarak **localStorage**'a düşer (`lib/repository/local-storage.ts`).
   Her iki implementasyon da `lib/repository/types.ts`'teki `Repository`
-  arayüzünü uygular; ileride gerçek bir backend eklemek isterseniz sadece bu
-  arayüzü uygulayan yeni bir sınıf yazıp `lib/repository/index.ts`'teki
-  `getRepository()` fonksiyonunu güncellemeniz yeterlidir.
+  arayüzünü uygular. Bu, hesap açmadan kullanan ziyaretçiler için **tek**
+  veri kaynağıdır.
+- Hesap açan kullanıcılar için **Supabase** (Postgres + Auth) devreye girer:
+  `utils/supabase/{client,server}.ts` istemci/sunucu bağlantılarını,
+  `lib/leaderboard/submit-result.ts` her tamamlanan testin (sınav/antrenman/
+  ders/hız testi) `test_results` tablosuna kaydedilmesini yönetir. Bu, yerel
+  `Repository` katmanının **yerine değil, yanına** eklenir — giriş yapmamış
+  ziyaretçiler hâlâ tamamen yerel çalışır.
 - Yazım motoru (`lib/typing-engine/engine.ts`) React state'inden bağımsız, saf
   bir TypeScript sınıfıdır; her tuş vuruşunu DOM'a doğrudan ref üzerinden
   uygular (React re-render'ı yoktur), böylece 16ms altı işlem süresi garanti
@@ -33,6 +51,25 @@ Prodüksiyon derlemesi için `npm run build && npm run start`.
   `lib/keyboard-layouts/q-klavye.ts`) Microsoft'un resmî KBDTUF/KBDTUQ klavye
   düzeni referans tablolarından derlenmiştir; bazı ikincil AltGr sembolleri
   en iyi çaba ile doldurulmuştur ve dosya içindeki yorumlarda belirtilmiştir.
+
+## Hesap, Liderlik Tablosu ve Profil
+
+- **Giriş/Kayıt** (`/login`, `/register`) — e-posta/şifre ve Google OAuth.
+  Oturum durumu `components/layout/AuthProvider.tsx` üzerinden uygulama
+  genelinde paylaşılır.
+- **10 Parmak Hız Testi** (`/speed-test`) — sabit süre ve herkese aynı
+  (deterministik) metinle çalışır; bu sayede sonuçlar liderlik tablosunda
+  adil şekilde karşılaştırılabilir.
+- **Liderlik Tablosu** (`/leaderboard`) — sınav/antrenman/ders/hız testi
+  modlarına ve F/Q klavyeye göre filtrelenebilir, her kullanıcının/anonim
+  ziyaretçinin en iyi skorunu gösterir.
+- **Anonim katılım** — hesap açmadan da bir isimle liderlik tablosunda
+  görünülebilir (`lib/anonymous-identity.ts`, localStorage tabanlı); sonradan
+  hesap açılırsa bu geçmiş `claim_anonymous_results` RPC'siyle hesaba
+  aktarılabilir.
+- **Profil** (`/profile`) — GitHub tarzı bir aktivite takvimi
+  (`components/profile/ContributionCalendar.tsx`, yıl bazında gezilebilir),
+  mod başına en iyi skor ve güncel seri (streak).
 
 ## Veri Modeli (`types/`)
 
@@ -88,7 +125,7 @@ kullanıcıya hangi değerlerin varsayılan olduğunu gösterir.
 }
 ```
 
-Sınav simülasyonu (`/sinav`), tek bir seçili metnin süreyi doldurmaya
+Sınav simülasyonu (`/exam`), tek bir seçili metnin süreyi doldurmaya
 yetmeyebileceği durumlar için `data/practice-texts.ts` içindeki
 `buildExamText()` fonksiyonuyla birden fazla metni art arda birleştirir;
 ayrıca metin eklemek bu havuzu otomatik olarak zenginleştirir.
@@ -109,13 +146,13 @@ oranı × gecikme skoruna sahip tuşlarını alıp bunları sesli harflerle
 harmanlayarak yazılabilir bir alıştırma metni üretir
 (`generateWeaknessDrill`). Bu metin `/dashboard` sayfasındaki "Zayıf
 tuşlarımla pratik yap" butonuyla tetiklenir ve `sessionStorage` üzerinden
-`/antrenman?drill=1` sayfasına aktarılır.
+`/practice?drill=1` sayfasına aktarılır.
 
 ## Bilinen Kapsam Dışı Noktalar
 
-- Kimlik doğrulama, bulut senkronizasyonu ve admin paneli bu sürümde yoktur
-  (`prompt.md`'nin backend'siz v1 kapsamına uygun olarak).
-  `lib/repository` arayüzü bunun için hazırdır.
+- Admin paneli (kullanıcı/skor yönetimi, moderasyon) bu sürümde yoktur.
+- Liderlik tablosundaki skorlar istemci tarafından bildirilir; sunucu
+  tarafında bir "replay" doğrulaması yapılmaz — bilinen bir v1 sınırlaması.
 - Klavye düzeni haritalarındaki bazı ikincil AltGr sembolleri (çekirdek
   Türkçe harfler ç ğ ı ö ş ü İ hariç) en iyi çaba ile doldurulmuştur; sınav
   metinleri bu sembolleri gerektirmez.
