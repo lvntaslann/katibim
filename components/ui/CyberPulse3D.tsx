@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useTheme } from "next-themes";
 
 export interface CyberPulse3DProps {
   speed?: number; // e.g. WPM or intensity, scales animation speed and wave amplitude
@@ -15,6 +16,7 @@ export function CyberPulse3D({
   heightClassName = "h-48",
 }: CyberPulse3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -46,8 +48,9 @@ export function CyberPulse3D({
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const baseColor = new THREE.Color("#4fbdb3"); // Teal accent
-    const peakColor = new THREE.Color("#7ed4cb"); // Cyan accent strong
+    const isDark = resolvedTheme !== "light";
+    const baseColor = new THREE.Color(isDark ? "#4fbdb3" : "#0f766e"); // Teal accent / Dark teal
+    const peakColor = new THREE.Color(isDark ? "#7ed4cb" : "#042f2e"); // Cyan accent / Very dark teal
 
     let index = 0;
     for (let i = 0; i < columns; i++) {
@@ -70,12 +73,11 @@ export function CyberPulse3D({
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-    // Particle Texture/Material
     const material = new THREE.PointsMaterial({
-      size: 0.18,
+      size: isDark ? 0.18 : 0.24,
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: isDark ? 0.85 : 1.0,
     });
 
     const particleSystem = new THREE.Points(geometry, material);
@@ -163,7 +165,7 @@ export function CyberPulse3D({
       material.dispose();
       renderer.dispose();
     };
-  }, [speed]);
+  }, [speed, resolvedTheme]);
 
   return (
     <div
