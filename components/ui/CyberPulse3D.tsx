@@ -18,12 +18,13 @@ export function CyberPulse3D({
   const containerRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
 
+  const speedRef = useRef(speed);
+  speedRef.current = speed;
+  const themeRef = useRef(resolvedTheme);
+  themeRef.current = resolvedTheme;
+
   useEffect(() => {
     if (!containerRef.current) return;
-
-    // Accessibility: check reduced motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const speedMultiplier = prefersReducedMotion ? 0.1 : Math.max(0.5, Math.min(3, speed / 40));
 
     // 1. Scene setup
     const scene = new THREE.Scene();
@@ -39,6 +40,15 @@ export function CyberPulse3D({
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.left = "0";
+    renderer.domElement.style.pointerEvents = "none";
+
+    // Clean up any lingering canvases from HMR or Strict Mode before appending
+    const existingCanvases = containerRef.current.querySelectorAll("canvas");
+    existingCanvases.forEach((c) => c.remove());
+
     containerRef.current.appendChild(renderer.domElement);
 
     // 4. Particle Wave Grid
@@ -48,9 +58,10 @@ export function CyberPulse3D({
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const isDark = resolvedTheme !== "light";
-    const baseColor = new THREE.Color(isDark ? "#4fbdb3" : "#0f766e"); // Teal accent / Dark teal
-    const peakColor = new THREE.Color(isDark ? "#7ed4cb" : "#042f2e"); // Cyan accent / Very dark teal
+    const baseColorLight = new THREE.Color("#0f766e");
+    const peakColorLight = new THREE.Color("#042f2e");
+    const baseColorDark = new THREE.Color("#4fbdb3");
+    const peakColorDark = new THREE.Color("#7ed4cb");
 
     let index = 0;
     for (let i = 0; i < columns; i++) {
@@ -61,9 +72,9 @@ export function CyberPulse3D({
         positions[index * 3 + 1] = y;
         positions[index * 3 + 2] = 0;
 
-        colors[index * 3] = baseColor.r;
-        colors[index * 3 + 1] = baseColor.g;
-        colors[index * 3 + 2] = baseColor.b;
+        colors[index * 3] = baseColorDark.r;
+        colors[index * 3 + 1] = baseColorDark.g;
+        colors[index * 3 + 2] = baseColorDark.b;
 
         index++;
       }
@@ -74,10 +85,10 @@ export function CyberPulse3D({
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: isDark ? 0.18 : 0.24,
+      size: 0.18,
       vertexColors: true,
       transparent: true,
-      opacity: isDark ? 0.85 : 1.0,
+      opacity: 0.85,
     });
 
     const particleSystem = new THREE.Points(geometry, material);
@@ -99,10 +110,20 @@ export function CyberPulse3D({
     // 6. Animation Loop
     let animationFrameId: number;
     let time = 0;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      time += 0.04 * speedMultiplier;
+
+      const currentSpeedMultiplier = prefersReducedMotion ? 0.1 : Math.max(0.5, Math.min(3, speedRef.current / 40));
+      time += 0.04 * currentSpeedMultiplier;
+
+      const isDark = themeRef.current !== "light";
+      const currentBaseColor = isDark ? baseColorDark : baseColorLight;
+      const currentPeakColor = isDark ? peakColorDark : peakColorLight;
+
+      material.size = isDark ? 0.18 : 0.24;
+      material.opacity = isDark ? 0.85 : 1.0;
 
       const posArr = geometry.attributes.position.array as Float32Array;
       const colArr = geometry.attributes.color.array as Float32Array;
@@ -114,12 +135,12 @@ export function CyberPulse3D({
           const y = (j - rows / 2) * 0.7;
 
           // Cybernetic wave equation
-          const z = Math.sin(i * 0.3 + time) * Math.cos(j * 0.3 + time) * (1.2 + speedMultiplier * 0.5);
+          const z = Math.sin(i * 0.3 + time) * Math.cos(j * 0.3 + time) * (1.2 + currentSpeedMultiplier * 0.5);
           posArr[idx * 3 + 2] = z;
 
           // Color shift based on wave height
           const waveRatio = (z + 2) / 4;
-          const tempColor = baseColor.clone().lerp(peakColor, waveRatio);
+          const tempColor = currentBaseColor.clone().lerp(currentPeakColor, waveRatio);
           colArr[idx * 3] = tempColor.r;
           colArr[idx * 3 + 1] = tempColor.g;
           colArr[idx * 3 + 2] = tempColor.b;
@@ -142,30 +163,35 @@ export function CyberPulse3D({
     animate();
 
     // 7. Responsive Resize Handling
-    const handleResize = () => {
-      if (!containerRef.current) return;
-      const newW = containerRef.current.clientWidth;
-      const newH = containerRef.current.clientHeight;
-      if (newW && newH) {
-        camera.aspect = newW / newH;
-        camera.updateProjectionMatrix();
-        renderer.setSize(newW, newH);
+    let lastW = 0;
+    let lastH = 0;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newW = Math.round(entry.contentRect.width);
+        const newH = Math.round(entry.contentRect.height);
+        if (newW > 0 && newH > 0 && (newW !== lastW || newH !== lastH)) {
+          lastW = newW;
+          lastH = newH;
+          camera.aspect = newW / newH;
+          camera.updateProjectionMatrix();
+          renderer.setSize(newW, newH);
+        }
       }
-    };
-    window.addEventListener("resize", handleResize);
+    });
+    resizeObserver.observe(containerRef.current);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
-      if (renderer.domElement && containerRef.current) {
-        containerRef.current.removeChild(renderer.domElement);
+      if (renderer.domElement && renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
       geometry.dispose();
       material.dispose();
       renderer.dispose();
     };
-  }, [speed, resolvedTheme]);
+  }, []);
 
   return (
     <div
