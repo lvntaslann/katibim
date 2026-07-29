@@ -60,9 +60,15 @@ export function TypewriterHeadline() {
   const display = reducedMotion ? HEADLINES[0] : text;
 
   return (
-    <span className="inline">
-      {display}
-      {!reducedMotion && <span className="typewriter-cursor ml-0.5 inline-block text-accent">|</span>}
+    <span className="relative grid w-full place-items-center">
+      {/* Invisible longest text to reserve exact layout height and prevent jumping */}
+      <span className="invisible col-start-1 row-start-1 w-full" aria-hidden="true">
+        {HEADLINES[0]}
+      </span>
+      <span className="col-start-1 row-start-1 w-full text-center">
+        {display}
+        {!reducedMotion && <span className="typewriter-cursor ml-0.5 inline-block text-accent">|</span>}
+      </span>
     </span>
   );
 }
