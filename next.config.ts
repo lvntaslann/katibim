@@ -44,6 +44,13 @@ const nextConfig: NextConfig = {
   // path at runtime — bundling it (the Next.js default) rewrites that path
   // and breaks the lookup. Keep it as a plain Node `require` instead.
   serverExternalPackages: ["geoip-lite"],
+  // Marking geoip-lite external stops file-tracing from following its
+  // dynamic (non-statically-analyzable) fs.readFileSync calls, so the
+  // standalone output ends up missing the .dat data files — force-include
+  // them explicitly for the one route that needs them.
+  outputFileTracingIncludes: {
+    "/api/track": ["./node_modules/geoip-lite/data/**/*"],
+  },
   experimental: {
     optimizePackageImports: ["lucide-react", "recharts", "framer-motion"],
   },
