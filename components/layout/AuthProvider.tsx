@@ -62,7 +62,10 @@ export function AuthProvider({
 
         const { data: healed, error: healError } = await supabase
           .from("profiles")
-          .upsert({ id: forUser.id, display_name: displayName, avatar_url: avatarUrl }, { onConflict: "id" })
+          .upsert(
+            { id: forUser.id, display_name: displayName, avatar_url: avatarUrl, email: forUser.email ?? null },
+            { onConflict: "id" }
+          )
           .select("id, display_name, avatar_url, role")
           .maybeSingle();
         if (healError) {
