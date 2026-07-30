@@ -60,8 +60,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Apply proxy to all routes except Next.js internals and static assets
+  // Apply proxy to all routes except Next.js internals, static assets, and
+  // the tracking beacon (api/track writes via service role and doesn't need
+  // a refreshed auth cookie — skipping it avoids an extra Supabase round
+  // trip on what is otherwise the highest-frequency endpoint in the app).
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/track|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

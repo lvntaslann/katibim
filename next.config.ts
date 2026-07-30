@@ -33,12 +33,17 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   turbopack: {
     root: __dirname,
   },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  // geoip-lite reads its bundled .dat files via a `__dirname`-relative fs
+  // path at runtime — bundling it (the Next.js default) rewrites that path
+  // and breaks the lookup. Keep it as a plain Node `require` instead.
+  serverExternalPackages: ["geoip-lite"],
   experimental: {
     optimizePackageImports: ["lucide-react", "recharts", "framer-motion"],
   },

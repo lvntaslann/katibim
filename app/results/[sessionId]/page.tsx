@@ -14,6 +14,7 @@ import { AnonymousOptIn } from "@/components/leaderboard/AnonymousOptIn";
 import { useAuth } from "@/components/layout/AuthProvider";
 import { submitResult } from "@/lib/leaderboard/submit-result";
 import { dismissAnonPrompt, getAnonymousName, setAnonymousName, wasAnonPromptDismissed } from "@/lib/anonymous-identity";
+import { trackEvent } from "@/lib/tracking/track";
 import type { LeaderboardMode, TestResultInput } from "@/types/leaderboard";
 import type { Session } from "@/types";
 
@@ -72,6 +73,21 @@ export default function ResultsPage({ params }: { params: Promise<{ sessionId: s
     // Only re-run when the loaded session or auth state actually changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, user]);
+
+  useEffect(() => {
+    if (!session) return;
+    if (session.mode === "exam") {
+      trackEvent("exam_complete", {
+        layout: session.layout,
+        netWpm: Math.round(session.netWpm),
+        passed: session.passed ?? null,
+      });
+    } else if (session.mode === "lesson") {
+      trackEvent("lesson_complete", { layout: session.layout, lessonId: session.lessonId ?? null });
+    }
+    // Fires once per loaded session, regardless of leaderboard eligibility.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   const keyStats = useMemo(
     () => (session ? deriveKeyStats(session.keyEvents, session.layout) : []),
