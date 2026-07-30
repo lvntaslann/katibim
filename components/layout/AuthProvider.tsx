@@ -9,6 +9,7 @@ export interface Profile {
   id: string;
   display_name: string;
   avatar_url: string | null;
+  role: "user" | "admin";
 }
 
 interface AuthContextValue {
@@ -39,7 +40,7 @@ export function AuthProvider({
       try {
         const { data } = await supabase
           .from("profiles")
-          .select("id, display_name, avatar_url")
+          .select("id, display_name, avatar_url, role")
           .eq("id", forUser.id)
           .maybeSingle();
         if (data) return data as Profile;
@@ -62,7 +63,7 @@ export function AuthProvider({
         const { data: healed, error: healError } = await supabase
           .from("profiles")
           .upsert({ id: forUser.id, display_name: displayName, avatar_url: avatarUrl }, { onConflict: "id" })
-          .select("id, display_name, avatar_url")
+          .select("id, display_name, avatar_url, role")
           .maybeSingle();
         if (healError) {
           console.error("profile self-heal failed:", healError.message);

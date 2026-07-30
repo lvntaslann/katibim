@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { LayoutProvider } from "@/components/layout/LayoutProvider";
 import { AuthProvider } from "@/components/layout/AuthProvider";
 import { ClaimAnonymousBanner } from "@/components/layout/ClaimAnonymousBanner";
+import { PageviewTracker } from "@/components/layout/PageviewTracker";
 import { createClient } from "@/utils/supabase/server";
 import type { KeyboardLayout } from "@/types";
 
@@ -58,6 +59,7 @@ export default async function RootLayout({
           <LayoutProvider initialLayout={initialLayout}>
             <AuthProvider initialUser={user}>
               <AosInit />
+              <PageviewTracker />
               <Navbar />
               <ClaimAnonymousBanner />
               <div className="flex-1">{children}</div>
