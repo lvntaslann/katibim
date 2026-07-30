@@ -43,6 +43,8 @@ uygulanırlar).
   ders/hız testi) `test_results` tablosuna kaydedilmesini yönetir. Bu, yerel
   `Repository` katmanının **yerine değil, yanına** eklenir — giriş yapmamış
   ziyaretçiler hâlâ tamamen yerel çalışır.
+- `profiles.role` alanına bağlı, herkese açık olmayan içsel bir kullanım
+  paneli bulunur.
 - Yazım motoru (`lib/typing-engine/engine.ts`) React state'inden bağımsız, saf
   bir TypeScript sınıfıdır; her tuş vuruşunu DOM'a doğrudan ref üzerinden
   uygular (React re-render'ı yoktur), böylece 16ms altı işlem süresi garanti
@@ -150,7 +152,6 @@ tuşlarımla pratik yap" butonuyla tetiklenir ve `sessionStorage` üzerinden
 
 ## Bilinen Kapsam Dışı Noktalar
 
-- Admin paneli (kullanıcı/skor yönetimi, moderasyon) bu sürümde yoktur.
 - Liderlik tablosundaki skorlar istemci tarafından bildirilir; sunucu
   tarafında bir "replay" doğrulaması yapılmaz — bilinen bir v1 sınırlaması.
 - Klavye düzeni haritalarındaki bazı ikincil AltGr sembolleri (çekirdek
