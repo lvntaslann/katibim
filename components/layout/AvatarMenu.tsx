@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 
 export function AvatarMenu() {
-  const { user, profile } = useAuth();
+  const { user, profile, signOut, isSigningOut } = useAuth();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -20,11 +22,11 @@ export function AvatarMenu() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  if (!user) return null;
+  if (!user && !isSigningOut) return null;
 
-  const label = profile?.display_name ?? user.email ?? "Kullanıcı";
+  const label = profile?.display_name ?? user?.email ?? "Kullanıcı";
   const initial = label.trim().charAt(0).toUpperCase() || "?";
-  const showEmailSeparately = Boolean(profile?.display_name && user.email);
+  const showEmailSeparately = Boolean(profile?.display_name && user?.email);
 
   return (
     <div ref={containerRef} className="relative">
@@ -43,11 +45,17 @@ export function AvatarMenu() {
         )}
       </button>
 
-      {isOpen && (
+      {isSigningOut && (
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-56 rounded-xl border border-hairline bg-surface/95 p-3 text-sm text-ink-muted shadow-2xl backdrop-blur-md dark:border-white/10 dark:bg-[#181715]/95">
+          Çıkış yapılıyor…
+        </div>
+      )}
+
+      {isOpen && !isSigningOut && (
         <div className="absolute right-0 top-full z-50 mt-1.5 w-56 rounded-xl border border-hairline bg-surface/95 p-1.5 shadow-2xl backdrop-blur-md dark:border-white/10 dark:bg-[#181715]/95">
           <div className="px-2.5 py-1.5">
             <p className="truncate text-sm font-semibold text-ink">{label}</p>
-            {showEmailSeparately && <p className="truncate text-xs text-ink-muted">{user.email}</p>}
+            {showEmailSeparately && <p className="truncate text-xs text-ink-muted">{user?.email}</p>}
           </div>
           <Link
             href="/profile"
@@ -56,14 +64,17 @@ export function AvatarMenu() {
           >
             <UserIcon className="h-4 w-4" /> Profil
           </Link>
-          <form action="/auth/logout" method="post">
-            <button
-              type="submit"
-              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-sm text-ink transition-colors hover:bg-black/5 dark:hover:bg-white/10"
-            >
-              <LogOut className="h-4 w-4" /> Çıkış Yap
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={async () => {
+              setIsOpen(false);
+              await signOut();
+              router.refresh();
+            }}
+            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-sm text-ink transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+          >
+            <LogOut className="h-4 w-4" /> Çıkış Yap
+          </button>
         </div>
       )}
     </div>

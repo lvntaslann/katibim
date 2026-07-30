@@ -19,6 +19,8 @@ interface AuthContextValue {
   acceptClaim: () => Promise<void>;
   dismissClaim: () => void;
   refreshProfile: () => Promise<void>;
+  signOut: () => Promise<void>;
+  isSigningOut: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -34,6 +36,7 @@ export function AuthProvider({
   const [user, setUser] = useState<User | null>(initialUser);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [showClaimBanner, setShowClaimBanner] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const fetchProfile = useCallback(
     async (forUser: User) => {
@@ -124,8 +127,23 @@ export function AuthProvider({
     setShowClaimBanner(false);
   }, []);
 
+  // Signs out via the browser client directly, so the auth cookies are
+  // cleared client-side and `onAuthStateChange` updates the UI immediately —
+  // no dependency on a server redirect (and whatever caching sits in front
+  // of it) ever completing first. `isSigningOut` lives here (not in the
+  // avatar menu itself) so consumers can keep rendering the "signing out"
+  // transition even after `user` flips to null and would otherwise unmount
+  // whatever local state that UI depended on.
+  const signOut = useCallback(async () => {
+    setIsSigningOut(true);
+    await supabase.auth.signOut();
+    setTimeout(() => setIsSigningOut(false), 600);
+  }, [supabase]);
+
   return (
-    <AuthContext.Provider value={{ user, profile, showClaimBanner, acceptClaim, dismissClaim, refreshProfile }}>
+    <AuthContext.Provider
+      value={{ user, profile, showClaimBanner, acceptClaim, dismissClaim, refreshProfile, signOut, isSigningOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

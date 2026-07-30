@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "./AuthProvider";
@@ -21,7 +21,8 @@ const LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, signOut, isSigningOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   // Close mobile menu when route changes
@@ -79,7 +80,7 @@ export function Navbar() {
         {/* Desktop Right Actions */}
         <div className="hidden items-center gap-2 lg:flex">
           <ThemeToggle />
-          {user ? (
+          {user || isSigningOut ? (
             <>
               <AvatarMenu />
               <Link
@@ -158,14 +159,17 @@ export function Navbar() {
                 >
                   Profilim
                 </Link>
-                <form action="/auth/logout" method="post">
-                  <button
-                    type="submit"
-                    className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-base font-semibold text-ink-muted dark:border-white/10"
-                  >
-                    Çıkış Yap
-                  </button>
-                </form>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setIsOpen(false);
+                    await signOut();
+                    router.refresh();
+                  }}
+                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-base font-semibold text-ink-muted dark:border-white/10"
+                >
+                  Çıkış Yap
+                </button>
               </>
             ) : (
               <>
