@@ -21,7 +21,7 @@ export async function getLeaderboard(
       .limit(limit);
 
     if (error || !rows) {
-      console.error("getLeaderboard failed:", error?.message);
+      // console.error("getLeaderboard failed:", error?.message);
       return [];
     }
 
@@ -58,7 +58,7 @@ export async function getLeaderboard(
     // A rejected fetch (network hiccup, blocked request) must still resolve
     // to an empty list — otherwise the caller's promise never settles and
     // the UI is stuck on its loading state forever.
-    console.error("getLeaderboard failed:", err instanceof Error ? err.message : err);
+    // console.error("getLeaderboard failed:", err instanceof Error ? err.message : err);
     return [];
   }
 }
@@ -75,7 +75,7 @@ async function fetchContributionDays(
     const { data, error } = await query;
 
     if (error || !data) {
-      console.error("getContributionData failed:", error?.message);
+      // console.error("getContributionData failed:", error?.message);
       return [];
     }
 
@@ -89,7 +89,7 @@ async function fetchContributionDays(
       .map(([date, count]) => ({ date, count }))
       .sort((a, b) => a.date.localeCompare(b.date));
   } catch (err) {
-    console.error("getContributionData failed:", err instanceof Error ? err.message : err);
+    // console.error("getContributionData failed:", err instanceof Error ? err.message : err);
     return [];
   }
 }

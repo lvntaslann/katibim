@@ -48,6 +48,23 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  const safeUser = user
+    ? {
+        id: user.id,
+        email: user.email,
+        user_metadata: {
+          display_name: user.user_metadata?.display_name,
+          full_name: user.user_metadata?.full_name,
+          name: user.user_metadata?.name,
+          avatar_url: user.user_metadata?.avatar_url,
+          picture: user.user_metadata?.picture,
+        },
+        app_metadata: {},
+        aud: user.aud,
+        created_at: user.created_at,
+      }
+    : null;
+
   return (
     <html
       lang="tr"
@@ -57,7 +74,7 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col bg-base text-ink">
         <ThemeProvider>
           <LayoutProvider initialLayout={initialLayout}>
-            <AuthProvider initialUser={user}>
+            <AuthProvider initialUser={safeUser as any}>
               <AosInit />
               <PageviewTracker />
               <Navbar />
