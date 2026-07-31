@@ -1,5 +1,4 @@
 const INTERVIEW_CRITERIA = [
-  "Genel kültür",
   "Mesleki bilgi",
   "Bir konuyu kavrayıp özetleme, ifade yeteneği",
   "Temsil kabiliyeti, tavır ve davranışların göreve uygunluğu",
