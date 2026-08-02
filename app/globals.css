@@ -37,9 +37,6 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-jetbrains-mono);
-  /* Landing-page hero/section headings only — see docs/design-system.md's
-     "two registers". Never used in Navbar/Footer or any app surface. */
-  --font-display: var(--font-bricolage-grotesque);
 
   --radius-sm: 3px;
   --radius-md: 5px;
@@ -80,7 +77,6 @@
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  --font-display: var(--font-display);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -170,6 +166,23 @@ body {
   animation: cursor-blink 900ms step-end infinite;
 }
 
+/* Gentle float for the hero's decorative preview cards (app/page.tsx) — a
+   pure translateY loop kept on an inner wrapper so it composes with the
+   card's own static Tailwind rotate class (one transform per element,
+   set imperatively here vs. utility, would otherwise clobber the other). */
+@keyframes hero-card-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.hero-card-float {
+  animation: hero-card-float 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -190,24 +203,10 @@ body {
 .hero-glow {
   position: relative;
   isolation: isolate;
-  /* Dialed back from the original 52/46/30 stops — team feedback was that
-     the top-of-hero green read as too strong/tiring on the eyes. */
   background:
-    radial-gradient(55% 45% at 15% 10%, color-mix(in srgb, var(--color-accent) 26%, transparent), transparent 72%),
-    radial-gradient(45% 55% at 90% 0%, color-mix(in srgb, var(--color-accent-strong) 22%, transparent), transparent 72%),
-    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 78%),
-    var(--color-base);
-}
-
-/* Dark mode's --color-accent is a bright teal against a near-black base
-   (vs. a dark green against off-white in light mode), so the same mix
-   percentages read much more intense — needs its own, lower stops rather
-   than inheriting the light-mode ones. */
-.dark .hero-glow {
-  background:
-    radial-gradient(55% 45% at 15% 10%, color-mix(in srgb, var(--color-accent) 13%, transparent), transparent 72%),
-    radial-gradient(45% 55% at 90% 0%, color-mix(in srgb, var(--color-accent-strong) 10%, transparent), transparent 72%),
-    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 78%),
+    radial-gradient(55% 45% at 15% 10%, color-mix(in srgb, var(--color-accent) 38%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 90% 0%, color-mix(in srgb, var(--color-accent-strong) 32%, transparent), transparent 70%),
+    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 75%),
     var(--color-base);
 }
 
@@ -224,41 +223,8 @@ body {
 }
 
 /* NOTE: deliberately no blanket `.hero-glow > * { position: relative }`
-   rule here — anything that needs to sit above the ::before grain layer
-   (the floor/mark layers, the text column) sets `relative z-10`/`absolute`
-   itself at the call site instead (see components/landing/HeroScrollStage.tsx). */
-
-/* Hero-only floor: soft drifting gradient blobs instead of the rigid
-   perspective grid the team found too sharp/technical for the feel they
-   wanted — this reads as fluid/ambient, slowly breathing rather than fixed
-   geometry. Lives on its own inner element (not the motion.div that scales/
-   pans it in HeroScrollStage) so this CSS `animation` never fights the
-   scroll+pointer parallax, which drives `transform` on the parent instead. */
-.hero-flow-floor {
-  background:
-    radial-gradient(50% 60% at 18% 100%, color-mix(in srgb, var(--color-accent) 34%, transparent), transparent 70%),
-    radial-gradient(55% 65% at 80% 100%, color-mix(in srgb, var(--color-accent-strong) 28%, transparent), transparent 70%),
-    radial-gradient(42% 55% at 48% 100%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 75%);
-  filter: blur(50px);
-  mask-image: linear-gradient(to top, black 0%, black 12%, transparent 88%);
-  -webkit-mask-image: linear-gradient(to top, black 0%, black 12%, transparent 88%);
-  animation: hero-flow-drift 17s ease-in-out infinite alternate;
-}
-
-@keyframes hero-flow-drift {
-  0% {
-    transform: translateX(-3%) scale(1);
-  }
-  50% {
-    transform: translateX(3%) scale(1.08);
-  }
-  100% {
-    transform: translateX(-1.5%) scale(1.03);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-flow-floor {
-    animation: none;
-  }
-}
+   rule here — it would override the FloatingHeroCard overlays' own
+   `absolute` utility class (equal specificity, later in the cascade wins),
+   turning them back into normal-flow flex items. Anything that needs to
+   sit above the ::before grain layer sets `relative z-10` (or equivalent)
+   directly in app/page.tsx instead. */
