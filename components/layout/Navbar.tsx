@@ -3,10 +3,12 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "./AuthProvider";
 import { AvatarMenu } from "./AvatarMenu";
+import { Logo } from "./Logo";
 
 const LINKS = [
   { href: "/practice", label: "Antrenman" },
@@ -43,49 +45,53 @@ export function Navbar() {
   }, [isOpen]);
 
   return (
-    <header className={`sticky top-0 z-50 border-b border-hairline/80 transition-colors ${isOpen ? "bg-base dark:bg-[#141413]" : "bg-base/90 backdrop-blur-xl dark:bg-[#181715]/90"}`}>
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        {/* Logo */}
-        <Link
-          href="/"
-          onClick={() => setIsOpen(false)}
-          className="flex items-center gap-2 text-xl font-bold tracking-tight text-ink transition-opacity hover:opacity-80"
-        >
-          <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl border border-accent/30 bg-accent/20 font-mono text-lg font-black text-accent shadow-sm dark:border-accent-strong/30 dark:bg-accent/25 dark:text-accent-strong">
-            K
-          </span>
-          <span>Katibim</span>
-        </Link>
+    <motion.header
+      initial={{ y: -24, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="sticky top-0 z-50 border-b border-hairline/80 bg-base transition-colors dark:bg-[#141413]"
+    >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div onClick={() => setIsOpen(false)}>
+          <Logo />
+        </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-0.5 lg:flex">
+        <div className="hidden items-center gap-3 xl:flex">
           {LINKS.map((link) => {
             const active = pathname === link.href || pathname.startsWith(link.href + "/");
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative rounded-xl px-2.5 py-2 text-[0.8125rem] font-medium whitespace-nowrap transition-all xl:px-3 xl:text-sm ${
-                  active
-                    ? "bg-accent/15 text-accent font-semibold dark:bg-accent/20 dark:text-accent-strong"
-                    : "text-ink-muted hover:bg-surface hover:text-ink dark:hover:bg-white/5"
+                className={`group relative px-2.5 py-2 font-mono text-[0.6875rem] font-medium tracking-wide whitespace-nowrap uppercase transition-all duration-200 hover:-translate-y-0.5 xl:px-3 ${
+                  active ? "text-ink" : "text-ink-muted hover:text-ink"
                 }`}
               >
                 {link.label}
+                {active ? (
+                  <motion.span
+                    layoutId="navbar-active-underline"
+                    className="absolute inset-x-2.5 -bottom-px h-0.5 bg-accent dark:bg-accent-strong"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                ) : (
+                  <span className="absolute inset-x-2.5 -bottom-px h-0.5 origin-left scale-x-0 bg-accent/50 transition-transform duration-200 ease-out group-hover:scale-x-100 dark:bg-accent-strong/50" />
+                )}
               </Link>
             );
           })}
         </div>
 
         {/* Desktop Right Actions */}
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-5 xl:flex">
           <ThemeToggle />
           {user || isSigningOut ? (
             <>
               <AvatarMenu />
               <Link
                 href="/exam"
-                className="rounded-full bg-accent px-4 py-2 text-xs font-bold whitespace-nowrap text-base shadow-md transition-all hover:scale-105 hover:bg-accent-strong hover:shadow-lg"
+                className="rounded-md bg-accent px-4 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-strong hover:shadow-md active:translate-y-0"
               >
                 Hemen Başla
               </Link>
@@ -94,13 +100,13 @@ export function Navbar() {
             <>
               <Link
                 href="/login"
-                className="text-sm font-medium whitespace-nowrap text-ink-muted transition-colors hover:text-ink"
+                className="font-mono text-xs font-medium tracking-wide whitespace-nowrap text-ink-muted uppercase transition-colors hover:text-ink"
               >
                 Giriş Yap
               </Link>
               <Link
                 href="/register"
-                className="rounded-full bg-accent px-4 py-2 text-xs font-bold whitespace-nowrap text-base shadow-md transition-all hover:scale-105 hover:bg-accent-strong hover:shadow-lg"
+                className="rounded-md bg-accent px-4 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-strong hover:shadow-md active:translate-y-0"
               >
                 Kayıt Ol
               </Link>
@@ -109,7 +115,7 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle Button */}
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 xl:hidden">
           <ThemeToggle />
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -124,7 +130,7 @@ export function Navbar() {
 
       {/* Mobile Glassmorphic Drawer Overlay - Solid Opaque Background */}
       {isOpen && (
-        <div className="fixed inset-x-0 top-[61px] z-50 flex h-[calc(100dvh-61px)] flex-col justify-between bg-base p-6 transition-all lg:hidden dark:bg-[#141413]">
+        <div className="fixed inset-x-0 top-[61px] z-50 flex h-[calc(100dvh-61px)] flex-col justify-between bg-base p-6 transition-all xl:hidden dark:bg-[#141413]">
           <div className="flex flex-col gap-2 overflow-y-auto">
             <p className="px-3 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-ink-muted">
               Menü Navigasyonu
@@ -203,6 +209,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-    </header>
+    </motion.header>
   );
 }
