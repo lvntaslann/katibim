@@ -6,6 +6,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AosInit } from "@/components/layout/AosInit";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { LayoutProvider } from "@/components/layout/LayoutProvider";
 import { AuthProvider } from "@/components/layout/AuthProvider";
@@ -89,7 +90,7 @@ export default async function RootLayout({
               <PageviewTracker />
               <Navbar />
               <ClaimAnonymousBanner />
-              <div className="flex-1">{children}</div>
+              <PageTransition>{children}</PageTransition>
               <Footer />
             </AuthProvider>
           </LayoutProvider>
