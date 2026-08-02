@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
@@ -7,12 +8,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:gap-8">
         {/* Brand Col */}
         <div className="flex flex-col items-start gap-4 sm:col-span-2">
-          <Link href="/" className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-ink">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/20 font-mono text-base font-black text-accent shadow-sm dark:bg-accent/25 dark:text-accent-strong">
-              K
-            </span>
-            <span>Katibim</span>
-          </Link>
+          <Logo size="sm" />
           <p className="max-w-md text-xs leading-relaxed text-ink-muted">
             Adalet Bakanlığı, Yargıtay, Danıştay ve Sayıştay zabıt kâtipliği sınavlarına özel yapay zeka destekli, gerçekçi on parmak hazırlık platformu.
           </p>
@@ -24,7 +20,7 @@ export function Footer() {
 
         {/* Quick Links Col */}
         <div className="flex flex-col gap-3 text-left">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-ink">Pratik & Sınav</p>
+          <p className="font-mono text-[11px] font-bold tracking-wider text-ink uppercase">Pratik & Sınav</p>
           <div className="flex flex-col gap-2 text-xs text-ink-muted">
             <Link href="/exam" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Sınav Simülasyonu
@@ -43,7 +39,7 @@ export function Footer() {
 
         {/* Institutional Guides Col */}
         <div className="flex flex-col gap-3 text-left">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-ink">Kurumsal Rehber</p>
+          <p className="font-mono text-[11px] font-bold tracking-wider text-ink uppercase">Kurumsal Rehber</p>
           <div className="flex flex-col gap-2 text-xs text-ink-muted">
             <Link href="/institutions" className="transition-colors hover:text-accent dark:hover:text-accent-strong">
               Hedef Kurum Profilleri
