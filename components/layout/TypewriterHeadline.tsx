@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 const HEADLINES = [
-  "Uygulamalı klavye sınavına emin adımlarla hazırlanın",
-  "Gerçek sınav temposunda pratik yapın",
-  "F ve Q klavyede kendi hızınızı bulun",
-  "Zabıt kâtipliği sınavına özel çalışın",
+  "Sınava emin adımlarla hazırlanın",
+  "Gerçek sınav temposunu yakalayın",
+  "F ve Q'da hızınızı bulun",
+  "Zabıt kâtipliğine özel çalışın",
 ];
 
 const TYPE_MS = 38;
