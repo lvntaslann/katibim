@@ -53,6 +53,11 @@ uygulanırlar).
   `lib/keyboard-layouts/q-klavye.ts`) Microsoft'un resmî KBDTUF/KBDTUQ klavye
   düzeni referans tablolarından derlenmiştir; bazı ikincil AltGr sembolleri
   en iyi çaba ile doldurulmuştur ve dosya içindeki yorumlarda belirtilmiştir.
+- Anasayfa (`/`) `components/landing/` altındaki bileşenlerden oluşur;
+  hero bölümü imleç tabanlı parallax ve kaydırma animasyonları için
+  **Framer Motion** kullanır. Sayfalar arası geçişler
+  (`components/layout/PageTransition.tsx`) de aynı kütüphaneyle, kök
+  layout'ta site geneline uygulanır.
 
 ## Hesap, Liderlik Tablosu ve Profil
 
