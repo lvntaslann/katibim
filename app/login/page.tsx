@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { hasAnonymousActivity, markPendingClaim } from "@/lib/anonymous-identity";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 const inputClass =
   "w-full rounded-lg border border-hairline bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-muted focus:border-accent focus:outline-none dark:border-white/10 dark:bg-white/5";
@@ -13,7 +14,7 @@ const inputClass =
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/";
+  const next = safeRedirectPath(searchParams.get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);

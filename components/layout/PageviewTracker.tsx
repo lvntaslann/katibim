@@ -10,13 +10,13 @@ const SKIP_PREFIXES = ["/insights"];
 
 export function PageviewTracker() {
   const pathname = usePathname();
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
   const isOperator = profile?.role === "admin";
 
   useEffect(() => {
     if (isOperator || SKIP_PREFIXES.some((prefix) => pathname.startsWith(prefix))) return;
-    trackPageview(pathname, user?.id ?? null);
-  }, [pathname, user?.id, isOperator]);
+    trackPageview(pathname);
+  }, [pathname, isOperator]);
 
   useEffect(() => {
     const onVisibilityChange = () => {
