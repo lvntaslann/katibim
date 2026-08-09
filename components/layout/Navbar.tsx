@@ -51,7 +51,7 @@ export function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="sticky top-0 z-50 border-b border-hairline/80 bg-base transition-colors dark:bg-[#141413]"
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
         <div onClick={() => setIsOpen(false)}>
           <Logo />
         </div>
