@@ -130,8 +130,8 @@ export function Navbar() {
 
       {/* Mobile Glassmorphic Drawer Overlay - Solid Opaque Background */}
       {isOpen && (
-        <div className="fixed inset-x-0 top-[61px] z-50 flex h-[calc(100dvh-61px)] flex-col justify-between bg-base p-6 transition-all xl:hidden dark:bg-[#141413]">
-          <div className="flex flex-col gap-2 overflow-y-auto">
+        <div className="fixed inset-x-0 top-[85px] z-50 flex h-[calc(100dvh-85px)] flex-col justify-between bg-base p-6 transition-all xl:hidden dark:bg-[#141413]">
+          <div className="flex flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <p className="px-3 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-ink-muted">
               Menü Navigasyonu
             </p>
@@ -142,7 +142,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className={`flex min-h-[52px] items-center justify-between rounded-2xl px-5 py-3 text-base font-semibold transition-all ${
+                  className={`flex min-h-[52px] items-center justify-between rounded-2xl px-5 py-3 text-[16px] font-semibold transition-all ${
                     active
                       ? "border border-accent/30 bg-accent/15 text-accent shadow-sm dark:border-accent/40 dark:bg-accent/20 dark:text-accent-strong"
                       : "border border-transparent text-ink-muted hover:border-hairline hover:bg-surface hover:text-ink dark:hover:border-white/5 dark:hover:bg-white/5"
@@ -161,7 +161,7 @@ export function Navbar() {
                 <Link
                   href="/profile"
                   onClick={() => setIsOpen(false)}
-                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-base font-semibold text-ink dark:border-white/10"
+                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-[16px] font-semibold text-ink dark:border-white/10"
                 >
                   Profilim
                 </Link>
@@ -172,7 +172,7 @@ export function Navbar() {
                     await signOut();
                     router.refresh();
                   }}
-                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-base font-semibold text-ink-muted dark:border-white/10"
+                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-[16px] font-semibold text-ink-muted dark:border-white/10"
                 >
                   Çıkış Yap
                 </button>
@@ -182,14 +182,14 @@ export function Navbar() {
                 <Link
                   href="/register"
                   onClick={() => setIsOpen(false)}
-                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-accent py-3.5 text-center text-base font-bold text-accent"
+                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-accent py-3.5 text-center text-[16px] font-bold text-accent"
                 >
                   Kayıt Ol
                 </Link>
                 <Link
                   href="/login"
                   onClick={() => setIsOpen(false)}
-                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-base font-semibold text-ink-muted dark:border-white/10"
+                  className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border border-hairline py-3.5 text-center text-[16px] font-semibold text-ink-muted dark:border-white/10"
                 >
                   Giriş Yap
                 </Link>
@@ -198,7 +198,7 @@ export function Navbar() {
             <Link
               href="/exam"
               onClick={() => setIsOpen(false)}
-              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-accent py-3.5 text-center text-base font-bold text-base shadow-lg transition-transform active:scale-95"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-accent py-3.5 text-center text-[16px] font-bold text-base shadow-lg transition-transform active:scale-95"
             >
               <span>Resmî Sınav Simülasyonu</span>
               <ChevronRight className="h-5 w-5" />

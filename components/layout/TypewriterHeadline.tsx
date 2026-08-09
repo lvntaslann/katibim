@@ -59,15 +59,28 @@ export function TypewriterHeadline() {
 
   const display = reducedMotion ? HEADLINES[0] : text;
 
+  // Split text at the last space to keep the cursor attached to the last word
+  const lastSpaceIndex = display.lastIndexOf(" ");
+  const initialWords = lastSpaceIndex !== -1 ? display.substring(0, lastSpaceIndex + 1) : "";
+  const lastWord = lastSpaceIndex !== -1 ? display.substring(lastSpaceIndex + 1) : display;
+
   return (
     <span className="relative grid w-full place-items-center">
-      {/* Invisible longest text to reserve exact layout height and prevent jumping */}
-      <span className="invisible col-start-1 row-start-1 w-full" aria-hidden="true">
-        {HEADLINES[0]}
+      {/* Invisible placeholder for all headlines to reserve max height and prevent jumping */}
+      <span className="invisible col-start-1 row-start-1 grid w-full place-items-center" aria-hidden="true">
+        {HEADLINES.map((h, i) => (
+          <span key={i} className="col-start-1 row-start-1 w-full text-center">
+            {h}
+            <span className="ml-0.5 inline-block">|</span>
+          </span>
+        ))}
       </span>
       <span className="col-start-1 row-start-1 w-full text-center">
-        {display}
-        {!reducedMotion && <span className="typewriter-cursor ml-0.5 inline-block text-accent">|</span>}
+        {initialWords}
+        <span className="whitespace-nowrap">
+          {lastWord}
+          {!reducedMotion && <span className="typewriter-cursor ml-0.5 inline-block text-accent">|</span>}
+        </span>
       </span>
     </span>
   );
