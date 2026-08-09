@@ -41,12 +41,11 @@ export function AuthProvider({
   const fetchProfile = useCallback(
     async (forUser: User) => {
       try {
-        const { data } = await supabase
-          .from("profiles")
-          .select("id, display_name, avatar_url, role")
-          .eq("id", forUser.id)
-          .maybeSingle();
-        if (data) return data as Profile;
+        const [{ data }, { data: isAdmin }] = await Promise.all([
+          supabase.from("profiles").select("id, display_name, avatar_url").eq("id", forUser.id).maybeSingle(),
+          supabase.rpc("is_admin"),
+        ]);
+        if (data) return { ...data, role: isAdmin ? "admin" : "user" } as Profile;
 
         // The profile row can go missing even though the account is intact
         // (e.g. an accidental delete in Table Editor) — the handle_new_user
@@ -65,17 +64,14 @@ export function AuthProvider({
 
         const { data: healed, error: healError } = await supabase
           .from("profiles")
-          .upsert(
-            { id: forUser.id, display_name: displayName, avatar_url: avatarUrl, email: forUser.email ?? null },
-            { onConflict: "id" }
-          )
-          .select("id, display_name, avatar_url, role")
+          .insert({ id: forUser.id, display_name: displayName, avatar_url: avatarUrl })
+          .select("id, display_name, avatar_url")
           .maybeSingle();
         if (healError) {
           console.error("profile self-heal failed:", healError.message);
           return null;
         }
-        return healed as Profile | null;
+        return healed ? ({ ...healed, role: "user" } as Profile) : null;
       } catch (err) {
         console.error("fetchProfile failed:", err instanceof Error ? err.message : err);
         return null;

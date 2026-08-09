@@ -39,7 +39,7 @@ export function flushPageDuration() {
   pageStartedAt = 0;
 }
 
-export function trackPageview(path: string, userId: string | null) {
+export function trackPageview(path: string) {
   flushPageDuration();
   pageStartedAt = Date.now();
 
@@ -50,7 +50,6 @@ export function trackPageview(path: string, userId: string | null) {
       kind: "pageview",
       client_session_id: getTrackingSessionId(),
       anonymous_client_id: getAnonymousClientId() || null,
-      user_id: userId,
       path,
       referrer: typeof document !== "undefined" ? document.referrer || null : null,
     }),

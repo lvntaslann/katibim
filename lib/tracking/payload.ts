@@ -4,7 +4,6 @@ export interface PageviewPayload {
   kind: "pageview";
   client_session_id: string;
   anonymous_client_id: string | null;
-  user_id: string | null;
   path: string;
   referrer: string | null;
 }
@@ -54,7 +53,6 @@ export function parseTrackPayload(body: unknown): TrackPayload {
       kind: "pageview",
       client_session_id: b.client_session_id,
       anonymous_client_id: isUuid(b.anonymous_client_id) ? b.anonymous_client_id : null,
-      user_id: isUuid(b.user_id) ? b.user_id : null,
       path: b.path,
       referrer: typeof b.referrer === "string" ? b.referrer.slice(0, MAX_PATH_LEN) : null,
     };

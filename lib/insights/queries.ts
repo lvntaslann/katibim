@@ -22,9 +22,9 @@ export interface VisitorSessionRow {
 /**
  * visitor_sessions.user_id references auth.users, not public.profiles, so
  * PostgREST can't auto-embed a profiles join — fetch profiles for the
- * referenced ids separately and merge in JS. Requires the service-role
- * client: profiles.email is column-revoked from `authenticated` (0002), so
- * this only works with a client that bypasses that grant.
+ * referenced ids separately and merge in JS. The email is read through the
+ * Auth admin API, which is only available to the service-role client used by
+ * the insights pages.
  */
 async function attachUserInfo<T extends { user_id: string | null }>(
   supabase: SupabaseClient,
@@ -34,9 +34,19 @@ async function attachUserInfo<T extends { user_id: string | null }>(
 
   const profileById = new Map<string, { email: string | null; display_name: string | null }>();
   if (userIds.length > 0) {
-    const { data } = await supabase.from("profiles").select("id, email, display_name").in("id", userIds);
-    for (const p of data ?? []) {
-      profileById.set(p.id, { email: p.email ?? null, display_name: p.display_name ?? null });
+    const [{ data: profiles }, authUsers] = await Promise.all([
+      supabase.from("profiles").select("id, display_name").in("id", userIds),
+      Promise.all(userIds.map((id) => supabase.auth.admin.getUserById(id))),
+    ]);
+
+    for (const p of profiles ?? []) {
+      profileById.set(p.id, { email: null, display_name: p.display_name ?? null });
+    }
+    for (const { data } of authUsers) {
+      const user = data.user;
+      if (!user) continue;
+      const current = profileById.get(user.id);
+      profileById.set(user.id, { email: user.email ?? null, display_name: current?.display_name ?? null });
     }
   }
 
