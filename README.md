@@ -1,4 +1,4 @@
-# Katibim
+# <img src="public/logo.png" height="32" alt=""> Katibim
 
 Türkiye'deki kamu sektörü kâtiplik (zabıt kâtibi, icra kâtibi, memur vb.)
 alım sınavlarına hazırlanan adaylar için uygulamalı klavye sınavı simülasyonu,
@@ -7,6 +7,14 @@ bir Next.js uygulaması. Hesap açmadan, tamamen istemci tarafında (IndexedDB)
 kullanılabilir; isteğe bağlı olarak hesap açan kullanıcılar için Supabase
 üzerinden liderlik tablosu, GitHub tarzı bir aktivite takvimi ve cihazlar
 arası senkron sunar.
+
+[![Website](https://img.shields.io/badge/site-katibim.bbclub.space-14b8a6)](https://katibim.bbclub.space/)
+
+![Katibim anasayfa](docs/screenshots/landing.png)
+
+## Modüller
+
+<img src="docs/screenshots/antrenman.png" width="32%"> <img src="docs/screenshots/sinav-simulasyonu.png" width="32%"> <img src="docs/screenshots/hiz-testi.png" width="32%">
 
 ## Kurulum ve Çalıştırma
 
