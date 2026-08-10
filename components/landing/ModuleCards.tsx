@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Building2, NotebookText, Timer } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
 
@@ -13,7 +11,6 @@ const MODULES = [
     href: "/practice",
     icon: Timer,
     badge: "Serbest Pratik",
-    parallax: 36,
   },
   {
     title: "Sınav Simülasyonu",
@@ -21,7 +18,6 @@ const MODULES = [
     href: "/exam",
     icon: Building2,
     badge: "Resmî Sınav",
-    parallax: -24,
   },
   {
     title: "Ders Sistemi",
@@ -29,29 +25,12 @@ const MODULES = [
     href: "/lessons",
     icon: NotebookText,
     badge: "Adım Adım",
-    parallax: 48,
   },
 ];
 
 function ModuleCard({ m }: { m: (typeof MODULES)[number] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 640px)");
-    const onChange = () => setIsMobile(mql.matches);
-    onChange();
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
-
-  // Each card drifts vertically at its own rate for the whole time it's in
-  // the viewport (continuous parallax), not just a one-time enter animation.
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [m.parallax, -m.parallax]);
-
   return (
-    <motion.div ref={ref} style={{ y: isMobile ? 0 : y }}>
+    <div>
       <Link
         href={m.href}
         className="group flex h-full flex-col justify-between rounded-md border border-hairline/80 p-6 transition-colors hover:border-accent/60 dark:border-white/10"
@@ -71,7 +50,7 @@ function ModuleCard({ m }: { m: (typeof MODULES)[number] }) {
           <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }
 
