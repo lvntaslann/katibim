@@ -34,7 +34,7 @@ export function ThemeToggle() {
       type="button"
       onClick={cycle}
       aria-label={`Tema: ${LABELS[current]}. Değiştirmek için tıklayın.`}
-      className="flex h-11 w-11 md:h-10 md:w-10 items-center justify-center rounded-xl border border-hairline/80 bg-surface/80 text-ink shadow-sm transition-all hover:bg-surface hover:scale-105 active:scale-95 dark:border-white/10 dark:bg-white/5"
+      className="flex h-11 w-11 md:h-10 md:w-10 items-center justify-center rounded-md border border-hairline/80 text-ink-muted transition-all duration-200 hover:bg-surface hover:text-ink hover:shadow-sm dark:border-white/10"
     >
       <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
     </button>

@@ -51,7 +51,7 @@ export function Navbar() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="sticky top-0 z-50 border-b border-hairline/80 bg-base transition-colors dark:bg-[#141413]"
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex w-full items-center justify-between px-4 py-5 sm:px-6 lg:px-8 2xl:px-12">
         <div onClick={() => setIsOpen(false)}>
           <Logo />
         </div>
@@ -64,7 +64,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`group relative px-2.5 py-2 font-mono text-[0.6875rem] font-medium tracking-wide whitespace-nowrap uppercase transition-all duration-200 hover:-translate-y-0.5 xl:px-3 ${
+                className={`group relative px-2.5 py-2 font-mono text-[0.6875rem] font-medium tracking-wide whitespace-nowrap uppercase transition-all duration-200 xl:px-3 ${
                   active ? "text-ink" : "text-ink-muted hover:text-ink"
                 }`}
               >
@@ -84,33 +84,33 @@ export function Navbar() {
         </div>
 
         {/* Desktop Right Actions */}
-        <div className="hidden items-center gap-5 xl:flex">
+        <div className="hidden items-center gap-2 xl:flex">
           <ThemeToggle />
           {user || isSigningOut ? (
-            <>
+            <div className="flex items-center gap-3">
               <AvatarMenu />
               <Link
                 href="/exam"
-                className="rounded-md bg-accent px-4 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-strong hover:shadow-md active:translate-y-0"
+                className="rounded-md bg-accent px-4 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:bg-accent-strong hover:shadow-md"
               >
                 Hemen Başla
               </Link>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="font-mono text-xs font-medium tracking-wide whitespace-nowrap text-ink-muted uppercase transition-colors hover:text-ink"
+                className="rounded-md border border-hairline/80 px-3 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-ink-muted uppercase transition-all duration-200 hover:bg-surface hover:text-ink hover:shadow-sm dark:border-white/10"
               >
                 Giriş Yap
               </Link>
               <Link
                 href="/register"
-                className="rounded-md bg-accent px-4 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-strong hover:shadow-md active:translate-y-0"
+                className="rounded-md bg-accent px-3 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:bg-accent-strong hover:shadow-md"
               >
                 Kayıt Ol
               </Link>
-            </>
+            </div>
           )}
         </div>
 
