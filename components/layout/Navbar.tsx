@@ -123,7 +123,7 @@ export function Navbar() {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Menüyü aç/kapat"
             aria-expanded={isOpen}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline/80 bg-surface/80 text-ink shadow-sm transition-all hover:bg-surface hover:scale-105 active:scale-95 dark:border-white/10 dark:bg-white/5"
+            className="flex h-11 w-11 items-center justify-center rounded-md border border-hairline/80 text-ink-muted transition-all duration-200 hover:bg-surface hover:text-ink hover:shadow-sm dark:border-white/10"
           >
             {isOpen ? <X className="h-6 w-6 text-accent" /> : <Menu className="h-6 w-6" />}
           </button>
