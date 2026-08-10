@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight, User, Sparkles } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "./AuthProvider";
 import { AvatarMenu } from "./AvatarMenu";
@@ -100,14 +100,16 @@ export function Navbar() {
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="rounded-md border border-hairline/80 px-3 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-ink-muted uppercase transition-all duration-200 hover:bg-surface hover:text-ink hover:shadow-sm dark:border-white/10"
+                className="inline-flex items-center gap-1.5 rounded-md border border-hairline/80 px-3 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-ink-muted uppercase transition-all duration-200 hover:bg-surface hover:text-ink hover:shadow-sm dark:border-white/10"
               >
+                <User size={14} strokeWidth={2} />
                 Giriş Yap
               </Link>
               <Link
                 href="/register"
-                className="rounded-md bg-accent px-3 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:bg-accent-strong hover:shadow-md"
+                className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-2 font-mono text-xs font-bold tracking-wide whitespace-nowrap text-base uppercase transition-all duration-200 hover:bg-accent-strong hover:shadow-md"
               >
+                <Sparkles size={14} strokeWidth={2} />
                 Kayıt Ol
               </Link>
             </div>
