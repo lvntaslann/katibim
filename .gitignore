@@ -48,3 +48,7 @@ AGENTS.md
 skills-lock.json
 prompt.md
 docs/0*-*.md
+
+# deployment scripts
+deploy_ftp_fast.js
+do_deploy.js
