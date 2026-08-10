@@ -172,7 +172,7 @@ export function HeroScrollStage({ children }: { children: React.ReactNode }) {
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center">{children}</div>
         </motion.div>
 
-        <div className="absolute inset-x-0 bottom-6 z-20 px-4 sm:px-6">
+        <div className="absolute inset-x-0 bottom-6 z-20 px-4 sm:bottom-10 sm:px-6">
           <HeroQuickBar />
         </div>
       </div>
