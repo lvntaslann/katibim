@@ -12,6 +12,7 @@ import { LayoutProvider } from "@/components/layout/LayoutProvider";
 import { AuthProvider } from "@/components/layout/AuthProvider";
 import { ClaimAnonymousBanner } from "@/components/layout/ClaimAnonymousBanner";
 import { PageviewTracker } from "@/components/layout/PageviewTracker";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { createClient } from "@/utils/supabase/server";
 import type { KeyboardLayout } from "@/types";
 
@@ -39,10 +40,71 @@ const bricolageGrotesque = Bricolage_Grotesque({
   preload: true,
 });
 
+const SITE_URL = "https://katibim.com";
+const SITE_NAME = "Katibim";
+const SITE_DESCRIPTION =
+  "Zabıt kâtibi, icra kâtibi ve diğer kamu kâtiplik sınavlarına F ve Q klavye ile hazırlanın: uygulamalı sınav simülasyonu, adım adım on parmak dersleri, hız testi ve detaylı klavye analitiği.";
+
 export const metadata: Metadata = {
-  title: "Katibim — Kamu Kâtiplik Sınavı Hazırlık Platformu",
-  description:
-    "Zabıt kâtibi, icra kâtibi ve diğer kamu kâtiplik sınavlarına F ve Q klavye ile hazırlanın: uygulamalı sınav simülasyonu, ders sistemi ve detaylı klavye analitiği.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Katibim — Kamu Kâtiplik Sınavı Hazırlık Platformu",
+    template: "%s | Katibim",
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "katibim",
+    "zabıt katibi sınavı",
+    "katiplik sınavı hazırlık",
+    "icra katibi sınavı",
+    "klavye hız testi",
+    "on parmak klavye dersi",
+    "F klavye antrenman",
+    "Q klavye antrenman",
+    "sınav simülasyonu",
+    "kamu personeli alımı",
+    "klavye pratik",
+  ],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: "Katibim — Kamu Kâtiplik Sınavı Hazırlık Platformu",
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Katibim Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Katibim — Kamu Kâtiplik Sınavı Hazırlık Platformu",
+    description: SITE_DESCRIPTION,
+    images: ["/logo.png"],
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+  category: "education",
 };
 
 export default async function RootLayout({
@@ -83,6 +145,49 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-base text-ink">
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: SITE_URL,
+            logo: `${SITE_URL}/logo.png`,
+            description: SITE_DESCRIPTION,
+            sameAs: [],
+          }}
+        />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: SITE_NAME,
+            url: SITE_URL,
+            description: SITE_DESCRIPTION,
+            inLanguage: "tr",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${SITE_URL}/?q={search_term_string}`,
+              "query-input": "required name=search_term_string",
+            },
+          }}
+        />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: SITE_NAME,
+            url: SITE_URL,
+            applicationCategory: "EducationalApplication",
+            operatingSystem: "All",
+            description: SITE_DESCRIPTION,
+            inLanguage: "tr",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "TRY",
+            },
+          }}
+        />
         <ThemeProvider>
           <LayoutProvider initialLayout={initialLayout}>
             <AuthProvider initialUser={safeUser as any}>
