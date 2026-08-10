@@ -132,7 +132,7 @@ export function HeroScrollStage({ children }: { children: React.ReactNode }) {
     <div
       id="hero"
       ref={containerRef}
-      className={`hero-glow relative ${reduceMotion ? "h-[calc(100dvh-4.5rem)]" : "h-[calc(190dvh-4.5rem)]"}`}
+      className={`hero-glow relative ${reduceMotion ? "h-[calc(100dvh-4.5rem)]" : "h-[calc(150dvh-4.5rem)]"}`}
     >
       <div
         onPointerMove={handlePointerMove}
