@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 const FAQ = [
   {
@@ -66,6 +67,21 @@ export function Faq() {
             <FaqItem key={item.q} item={item} />
           ))}
         </div>
+
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: FAQ.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: item.a,
+              },
+            })),
+          }}
+        />
       </div>
     </section>
   );
