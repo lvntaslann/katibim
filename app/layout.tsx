@@ -16,6 +16,7 @@ import { NavigationLoader } from "@/components/layout/NavigationLoader";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createClient } from "@/utils/supabase/server";
 import type { KeyboardLayout } from "@/types";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -190,6 +191,7 @@ export default async function RootLayout({
           }}
         />
         <ThemeProvider>
+          <NextTopLoader color="var(--color-accent)" showSpinner={false} height={2} />
           <LayoutProvider initialLayout={initialLayout}>
             <AuthProvider initialUser={safeUser as any}>
               <AosInit />
