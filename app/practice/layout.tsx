@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Antrenman — Klavye Pratik Modülü | Katibim",
     description:
       "F ve Q klavye ile on parmak antrenman yapın. Genel, hukuki ve resmî yazışma metinleriyle pratik yaparak kâtiplik sınavına hazırlanın.",
-    url: "https://katibim.com/practice",
+    url: "https://katibim.bbclub.space/practice",
   },
   alternates: {
     canonical: "/practice",

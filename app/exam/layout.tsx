@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Sınav Simülasyonu — Gerçekçi Kâtiplik Denemesi | Katibim",
     description:
       "Adalet Bakanlığı ve diğer kurumların kâtiplik sınavlarını birebir simüle edin. Gerçek sınav koşullarında pratik yapın.",
-    url: "https://katibim.com/exam",
+    url: "https://katibim.bbclub.space/exam",
   },
   alternates: {
     canonical: "/exam",
@@ -31,7 +31,7 @@ export default function ExamLayout({ children }: { children: React.ReactNode }) 
           provider: {
             "@type": "Organization",
             name: "Katibim",
-            url: "https://katibim.com",
+            url: "https://katibim.bbclub.space",
           },
         }}
       />

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Klavye Hız Testi — Dakikada Kaç Kelime Yazıyorsunuz? | Katibim",
     description:
       "10 parmak klavye hız testinizi yapın ve WPM skorunuzu öğrenin. F ve Q klavye desteği.",
-    url: "https://katibim.com/speed-test",
+    url: "https://katibim.bbclub.space/speed-test",
   },
   alternates: {
     canonical: "/speed-test",

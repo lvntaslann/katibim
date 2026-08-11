@@ -41,7 +41,7 @@ const bricolageGrotesque = Bricolage_Grotesque({
   preload: true,
 });
 
-const SITE_URL = "https://katibim.com";
+const SITE_URL = "https://katibim.bbclub.space";
 const SITE_NAME = "Katibim";
 const SITE_DESCRIPTION =
   "Zabıt kâtibi, icra kâtibi ve diğer kamu kâtiplik sınavlarına F ve Q klavye ile hazırlanın: uygulamalı sınav simülasyonu, adım adım on parmak dersleri, hız testi ve detaylı klavye analitiği.";

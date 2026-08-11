@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Liderlik Tablosu — En Hızlı Yazanlar | Katibim",
     description:
       "Katibim kullanıcıları arasında en yüksek net WPM skorlarını görün. Hız testi, sınav ve antrenman sıralaması.",
-    url: "https://katibim.com/leaderboard",
+    url: "https://katibim.bbclub.space/leaderboard",
   },
   alternates: {
     canonical: "/leaderboard",
