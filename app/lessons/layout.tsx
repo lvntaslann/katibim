@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "On Parmak Klavye Dersleri — F ve Q Klavye Eğitimi | Katibim",
     description:
       "Sıfırdan on parmak klavye öğrenin. F ve Q klavye için adım adım yapılandırılmış derslerle kâtiplik sınavına hazırlanın.",
-    url: "https://katibim.com/lessons",
+    url: "https://katibim.bbclub.space/lessons",
   },
   alternates: {
     canonical: "/lessons",
@@ -29,7 +29,7 @@ export default function LessonsLayout({ children }: { children: React.ReactNode 
           provider: {
             "@type": "Organization",
             name: "Katibim",
-            url: "https://katibim.com",
+            url: "https://katibim.bbclub.space",
           },
           inLanguage: "tr",
           isAccessibleForFree: true,

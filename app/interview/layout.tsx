@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Mülakat Hazırlık — Kâtiplik Sözlü Sınav Rehberi | Katibim",
     description:
       "Kamu kâtiplik mülakatına hazırlanın. Değerlendirme kriterleri, örnek sorular ve cevap stratejileri.",
-    url: "https://katibim.com/interview",
+    url: "https://katibim.bbclub.space/interview",
   },
   alternates: {
     canonical: "/interview",
