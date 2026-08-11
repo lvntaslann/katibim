@@ -31,7 +31,15 @@ export function Logo({ size = "md" }: { size?: "md" | "sm" }) {
   }, []);
 
   return (
-    <Link href="/" className="group inline-flex items-center gap-2 font-display font-semibold tracking-tight text-ink">
+    <Link
+      href="/"
+      onClick={() => {
+        if (window.location.pathname === "/") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }}
+      className="group inline-flex items-center gap-2 font-display font-semibold tracking-tight text-ink"
+    >
       <Image src="/logo.png" alt="" width={624} height={852} className={`shrink-0 ${iconClass}`} priority />
       <span className={`inline-flex items-center ${textClass}`}>
         <span className="relative flex items-center">

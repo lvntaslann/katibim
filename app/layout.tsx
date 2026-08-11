@@ -12,6 +12,7 @@ import { LayoutProvider } from "@/components/layout/LayoutProvider";
 import { AuthProvider } from "@/components/layout/AuthProvider";
 import { ClaimAnonymousBanner } from "@/components/layout/ClaimAnonymousBanner";
 import { PageviewTracker } from "@/components/layout/PageviewTracker";
+import { NavigationLoader } from "@/components/layout/NavigationLoader";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { createClient } from "@/utils/supabase/server";
 import type { KeyboardLayout } from "@/types";
@@ -195,6 +196,7 @@ export default async function RootLayout({
               <PageviewTracker />
               <Navbar />
               <ClaimAnonymousBanner />
+              <NavigationLoader />
               <PageTransition>{children}</PageTransition>
               <Footer />
             </AuthProvider>
