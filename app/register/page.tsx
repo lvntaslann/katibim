@@ -37,7 +37,8 @@ function RegisterContent() {
     });
     setLoading(false);
     if (error) {
-      setError("Kayıt oluşturulamadı. E-posta zaten kullanılıyor olabilir.");
+      console.error("SignUp error:", error);
+      setError(`Hata: ${error.message}`);
       return;
     }
     if (hasAnonymousActivity()) markPendingClaim();
